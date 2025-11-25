@@ -29,7 +29,7 @@ const Home = () => {
       <Card title="首页">
         <div className={styles.homePage_content}>
           <h1>欢迎来到 PC 模板</h1>
-          <p>这是一个基于 React 18 + Ant Design 的 PC 端模板</p>
+          <p>这是一个基于 React 19 + Ant Design 6 的 PC 端模板</p>
           <p>集成了 Zustand 全局状态管理</p>
           <p>当前登录状态: {isLogin ? '已登录 ✅' : '未登录 ❌'}</p>
           <div className={styles.homePage_buttonGroup}>

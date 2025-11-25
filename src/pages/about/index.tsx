@@ -6,8 +6,8 @@ const About = () => {
   const navigate = useNavigate()
 
   const techStack = [
-    'React 18.3.1',
-    'Ant Design 5.x',
+    'React 19.2.0',
+    'Ant Design 6.x',
     'React Router 7.x',
     'TypeScript 5.9.3',
     'Vite 7.x',
