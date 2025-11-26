@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { message } from 'antd'
+import { toast } from '@/lib/toast'
 import { useIsLogin } from '@/store'
 import routes from './routes'
 import type { RouteConfig } from './routes'
@@ -67,7 +67,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
 
     // 如果路由需要认证但用户未登录
     if (currentRoute?.meta?.requiresAuth && !isLogin) {
-      message.warning('请先登录')
+      toast.warning('请先登录')
       // 跳转到登录页面，并保存当前路径以便登录后跳转回来
       navigate('/login', {
         replace: true,

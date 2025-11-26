@@ -24,7 +24,9 @@ src/
 ├── utils/      → 工具函数
 ├── hooks/      → 自定义 Hooks (基于 ahooks)
 ├── store/      → 状态管理 (Zustand)
-└── styles/     → 全局样式
+├── components/ → 公共组件 (shadcn/ui)
+├── lib/        → 工具库 (cn, toast)
+└── styles/     → 全局样式 (Tailwind CSS)
 ```
 
 ### 步骤 3: 创建第一个页面
@@ -35,20 +37,25 @@ src/
 
 ```typescript
 // src/pages/myPage/index.tsx
-import { Button, Card } from 'antd-mobile'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useNavigate } from 'react-router-dom'
-import styles from './index.module.less'
 
 const MyPage = () => {
   const navigate = useNavigate()
 
   return (
-    <div className={styles.myPage}>
-      <Card title="我的页面">
-        <p>这是我创建的第一个页面!</p>
-        <Button color="primary" onClick={() => navigate('/')}>
-          返回首页
-        </Button>
+    <div className="container mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>我的页面</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-base text-muted-foreground">这是我创建的第一个页面!</p>
+          <Button onClick={() => navigate('/')} className="mt-4">
+            返回首页
+          </Button>
+        </CardContent>
       </Card>
     </div>
   )
@@ -57,20 +64,7 @@ const MyPage = () => {
 export default MyPage
 ```
 
-```less
-// src/pages/myPage/index.module.less
-// 使用 BEM 命名规范
-.myPage {
-  padding: 16px;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-
-  // Element (使用单下划线 _)
-  &_content {
-    margin-top: 20px;
-  }
-}
-```
+**注意**：不再需要创建 `index.module.less` 文件，所有样式使用 Tailwind CSS 工具类。
 
 #### 3.2 配置路由
 
@@ -78,14 +72,14 @@ export default MyPage
 
 ```typescript
 // 1. 导入页面组件
-import YourPage from '../pages/yourPage'
+import MyPage from '@/pages/myPage'
 
 // 2. 在路由表中添加配置
 export const routes: RouteConfig[] = [
   // ... 其他路由
   {
-    path: '/your-page',
-    element: <YourPage />,
+    path: '/my-page',
+    element: <MyPage />,
     meta: {
       title: '我的页面',
       requiresAuth: false,
@@ -101,8 +95,8 @@ export const routes: RouteConfig[] = [
 
 ```typescript
 // src/pages/home/index.tsx
-<Button color="primary" onClick={() => navigate('/my-page')}>
-  your页面
+<Button onClick={() => navigate('/my-page')}>
+  我的页面
 </Button>
 ```
 
@@ -223,6 +217,7 @@ const ProductList = () => {
 
 ```typescript
 import { formatPhone, formatDate, storage } from '@/utils'
+import { toast } from '@/lib/toast'
 
 // 格式化手机号
 const phone = formatPhone('13800138000') // 138****8000
@@ -233,6 +228,10 @@ const date = formatDate(Date.now()) // 2024-01-01 12:00:00
 // 本地存储
 storage.set('token', 'abc123', 3600) // 保存 1 小时
 const token = storage.get('token')
+
+// Toast 通知
+toast.success('操作成功')
+toast.error('操作失败')
 ```
 
 ## 🔧 常用命令
@@ -270,6 +269,7 @@ import { UserAPI } from '@/services'
 
 ```
 components/
+├── ui/         → shadcn/ui 组件
 ├── Common/      → 通用组件 (Loading, Empty)
 └── Business/    → 业务组件 (UserCard, ProductCard)
 ```
@@ -289,74 +289,70 @@ pages/
 pages/
 └── home/
     ├── index.tsx
-    ├── index.module.less
     └── components/          → 只在 home 页使用的组件
         └── Banner/
-            ├── index.tsx
-            └── index.module.less
+            └── index.tsx
 ```
 
-### 4. 样式变量和 BEM 命名
+### 4. Tailwind CSS 样式
 
-```less
-// 在组件样式中使用全局变量和 BEM 命名
-@import '@/styles/variables.less';
+```tsx
+// 使用 Tailwind 工具类
+;<div className="container mx-auto p-4">
+  <div className="flex items-center justify-between">
+    <h1 className="text-lg font-semibold">标题</h1>
+    <Button className="ml-auto">操作</Button>
+  </div>
+</div>
 
-// Block
-.myPage {
-  color: @primary-color;
-
-  // Element (使用单下划线 _)
-  &_button {
-    font-size: @font-size-lg;
-    padding: @spacing-base;
-
-    // Modifier (使用双下划线 __)
-    &__primary {
-      background: @primary-color;
-    }
-  }
-}
+// 使用 cn() 组合条件类名
+import { cn } from '@/lib/utils'
+;<div className={cn('base-class', isActive && 'bg-primary text-white', className)}>内容</div>
 ```
 
 详细样式规范请查看 [页面开发规范](./PAGE_GUIDE.md)
 
 ## 🎨 UI 组件使用
 
-antd-mobile 常用组件示例:
+shadcn/ui 常用组件示例:
 
 ```typescript
-import {
-  Button,
-  Input,
-  Card,
-  List,
-  Toast,
-  Dialog,
-  Picker,
-  DatePicker,
-  InfiniteScroll,
-} from 'antd-mobile'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { toast } from '@/lib/toast'
 
 // 按钮
-<Button color="primary">主要按钮</Button>
+<Button>主要按钮</Button>
+<Button variant="outline">次要按钮</Button>
+<Button variant="destructive">危险按钮</Button>
+
+// 卡片
+<Card>
+  <CardHeader>
+    <CardTitle>卡片标题</CardTitle>
+  </CardHeader>
+  <CardContent>内容</CardContent>
+</Card>
 
 // 输入框
 <Input placeholder="请输入" />
 
-// 卡片
-<Card title="卡片标题">内容</Card>
-
-// 列表
-<List>
-  <List.Item>列表项</List.Item>
-</List>
-
-// 提示
-Toast.show({ content: '操作成功' })
-
 // 对话框
-Dialog.confirm({ content: '确认删除?' })
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>确认</DialogTitle>
+    </DialogHeader>
+    <p>确认删除?</p>
+  </DialogContent>
+</Dialog>
+
+// Toast 通知
+toast.success('操作成功')
+toast.error('操作失败')
+toast.warning('警告信息')
 ```
 
 ## 🐛 常见问题
@@ -367,7 +363,7 @@ A: 检查 `.env.development` 中的 `VITE_API_BASE_URL` 配置是否正确。
 
 ### Q: 样式不生效?
 
-A: 确保使用了 CSS Modules,文件名为 `.module.less`。
+A: 确保使用了 Tailwind CSS 工具类，检查类名是否正确。
 
 ### Q: 路由跳转失败?
 
@@ -377,11 +373,16 @@ A: 检查路由配置是否正确,路径是否匹配。
 
 A: 运行 `npm run type-check` 查看详细错误信息。
 
+### Q: shadcn/ui 组件找不到?
+
+A: 确保组件已添加到 `src/components/ui/` 目录，使用 shadcn CLI 添加组件。
+
 ## 📚 下一步
 
 - 阅读 [项目结构指南](./PROJECT_GUIDE.md) - 了解完整项目结构
 - 查看 [API 开发规范](./API_GUIDE.md) - 学习 Services 模块开发
 - 查看 [页面开发规范](./PAGE_GUIDE.md) - 学习页面和样式规范
 - 查看 [状态管理指南](./ZUSTAND_GUIDE.md) - 学习 Zustand 使用
-- 参考 [antd-mobile 文档](https://mobile.ant.design/)
+- 参考 [Tailwind CSS 文档](https://tailwindcss.com/docs)
+- 参考 [shadcn/ui 文档](https://ui.shadcn.com/)
 - 参考 [ahooks 文档](https://ahooks.js.org/)

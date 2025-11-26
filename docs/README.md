@@ -45,7 +45,8 @@
 
 - **[PAGE_GUIDE.md](./PAGE_GUIDE.md)** - 页面开发规范
   - 页面目录命名规范（小驼峰）
-  - BEM 样式命名规范
+  - Tailwind CSS 样式使用
+  - shadcn/ui 组件使用
   - 页面结构要求
   - 组件放置原则
   - 最佳实践
@@ -159,6 +160,9 @@ docs/
 - [React 官方文档](https://react.dev/)
 - [TypeScript 文档](https://www.typescriptlang.org/)
 - [Vite 文档](https://vitejs.dev/)
-- [antd-mobile 文档](https://mobile.ant.design/)
+- [Tailwind CSS 文档](https://tailwindcss.com/docs)
+- [shadcn/ui 文档](https://ui.shadcn.com/)
 - [Zustand 文档](https://docs.pmnd.rs/zustand)
 - [ahooks 文档](https://ahooks.js.org/)
+- [React Hook Form 文档](https://react-hook-form.com/)
+- [Zod 文档](https://zod.dev/)

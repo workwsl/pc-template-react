@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
-import { message } from 'antd'
+import { toast } from '@/lib/toast'
 import { useUserStore } from '../store'
 
 /**
@@ -51,7 +51,7 @@ request.interceptors.response.use(
     }
 
     // 处理业务错误
-    message.error(msg || '请求失败')
+    toast.error(msg || '请求失败')
     return Promise.reject(new Error(msg || '请求失败'))
   },
   (error: AxiosError) => {
@@ -59,27 +59,27 @@ request.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          message.error('未授权,请重新登录')
+          toast.error('未授权,请重新登录')
           // 清除 token,跳转登录页
           useUserStore.getState().logout()
           window.location.hash = '#/'
           break
         case 403:
-          message.error('没有权限访问')
+          toast.error('没有权限访问')
           break
         case 404:
-          message.error('请求的资源不存在')
+          toast.error('请求的资源不存在')
           break
         case 500:
-          message.error('服务器错误')
+          toast.error('服务器错误')
           break
         default:
-          message.error('网络错误')
+          toast.error('网络错误')
       }
     } else if (error.request) {
-      message.error('网络连接失败')
+      toast.error('网络连接失败')
     } else {
-      message.error('请求配置错误')
+      toast.error('请求配置错误')
     }
 
     return Promise.reject(error)

@@ -133,11 +133,11 @@ export const MyComponent = () => {
 ```typescript
 // ✅ 推荐 - 按字母顺序排列
 import { useEffect, useState } from 'react'
-import { Button } from 'antd-mobile'
+import { Button } from '@/components/ui/button'
 import { useUserStore } from '@/store'
 
 // ❌ 不推荐 - 无序排列
-import { Button } from 'antd-mobile'
+import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
 import { useUserStore } from '@/store'
 ```

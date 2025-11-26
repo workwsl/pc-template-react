@@ -29,16 +29,16 @@
 **示例**：
 
 ```typescript
-// src/components/Common/Button/index.tsx
+// src/components/Common/CustomButton/index.tsx
 import { FC, ReactNode } from 'react'
-import classNames from 'classnames'
-import styles from './index.module.less'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-interface ButtonProps {
+interface CustomButtonProps {
   /** 按钮类型 */
-  type?: 'primary' | 'default' | 'danger'
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
   /** 按钮大小 */
-  size?: 'small' | 'medium' | 'large'
+  size?: 'default' | 'sm' | 'lg' | 'icon'
   /** 是否禁用 */
   disabled?: boolean
   /** 是否加载中 */
@@ -49,40 +49,29 @@ interface ButtonProps {
   onClick?: () => void
 }
 
-const Button: FC<ButtonProps> = ({
-  type = 'default',
-  size = 'medium',
+const CustomButton: FC<CustomButtonProps> = ({
+  variant = 'default',
+  size = 'default',
   disabled = false,
   loading = false,
   children,
   onClick,
 }) => {
-  const handleClick = () => {
-    if (disabled || loading) return
-    onClick?.()
-  }
-
   return (
-    <button
-      className={classNames(
-        styles.button,
-        styles[`button__${type}`],
-        styles[`button__${size}`],
-        {
-          [styles.button__disabled]: disabled,
-          [styles.button__loading]: loading,
-        }
-      )}
-      onClick={handleClick}
-      disabled={disabled}
+    <Button
+      variant={variant}
+      size={size}
+      disabled={disabled || loading}
+      onClick={onClick}
+      className={cn(loading && 'opacity-50 cursor-not-allowed')}
     >
-      {loading && <span className={styles.button_loadingIcon}>⏳</span>}
+      {loading && <span className="mr-2">⏳</span>}
       {children}
-    </button>
+    </Button>
   )
 }
 
-export default Button
+export default CustomButton
 ```
 
 #### 1.2 业务组件 (Business Components)
@@ -102,9 +91,10 @@ export default Button
 // src/components/Business/UserCard/index.tsx
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Avatar } from 'antd-mobile'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { useUserStore } from '@/store'
-import styles from './index.module.less'
 
 interface UserCardProps {
   /** 用户ID */
@@ -122,18 +112,25 @@ const UserCard: FC<UserCardProps> = ({ userId, showActions = true }) => {
   }
 
   return (
-    <Card className={styles.userCard}>
-      <div className={styles.userCard_header}>
-        <Avatar src={userInfo?.avatar} className={styles.userCard_avatar} />
-        <div className={styles.userCard_info}>
-          <h3 className={styles.userCard_name}>{userInfo?.username}</h3>
-          <p className={styles.userCard_email}>{userInfo?.email}</p>
+    <Card>
+      <CardHeader>
+        <div className="flex items-center gap-4">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={userInfo?.avatar} alt={userInfo?.username} />
+            <AvatarFallback>{userInfo?.username?.[0] || 'U'}</AvatarFallback>
+          </Avatar>
+          <div>
+            <CardTitle className="text-base">{userInfo?.username}</CardTitle>
+            <p className="text-sm text-muted-foreground">{userInfo?.email}</p>
+          </div>
         </div>
-      </div>
+      </CardHeader>
       {showActions && (
-        <div className={styles.userCard_actions}>
-          <button onClick={handleViewProfile}>查看详情</button>
-        </div>
+        <CardContent>
+          <Button onClick={handleViewProfile} variant="outline" className="w-full">
+            查看详情
+          </Button>
+        </CardContent>
       )}
     </Card>
   )
@@ -164,7 +161,6 @@ import { UserAPI } from '@/services'
 import { Loading } from '@/components/Common'
 import UserInfo from './components/UserInfo'
 import UserPosts from './components/UserPosts'
-import styles from './index.module.less'
 
 const UserProfile: FC = () => {
   const { userId } = useParams<{ userId: string }>()
@@ -183,7 +179,7 @@ const UserProfile: FC = () => {
   if (loading) return <Loading />
 
   return (
-    <div className={styles.userProfilePage}>
+    <div className="container mx-auto p-4 space-y-4">
       <UserInfo userInfo={userInfo} />
       <UserPosts userId={Number(userId)} />
     </div>
@@ -200,14 +196,14 @@ export default UserProfile
 ```
 ComponentName/
 ├── index.tsx              # 组件主文件
-├── index.module.less      # 组件样式
 ├── types.ts              # 类型定义（可选）
 ├── constants.ts          # 组件常量（可选）
 └── components/           # 子组件（可选）
     └── SubComponent/
-        ├── index.tsx
-        └── index.module.less
+        └── index.tsx
 ```
+
+**注意**：不再需要 `index.module.less` 文件，所有样式使用 Tailwind CSS 工具类。
 
 #### 2.2 组件代码结构
 
@@ -215,18 +211,20 @@ ComponentName/
 // 1. 导入第三方库
 import { FC, useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Toast } from 'antd-mobile'
 
-// 2. 导入项目内部模块
+// 2. 导入 UI 组件库
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+
+// 3. 导入项目内部模块
 import { useRequest } from '@/hooks'
 import { UserAPI } from '@/services'
 import { useUserStore } from '@/store'
+import { cn } from '@/lib/utils'
+import { toast } from '@/lib/toast'
 
-// 3. 导入类型定义
+// 4. 导入类型定义
 import type { User } from '@/services'
-
-// 4. 导入样式
-import styles from './index.module.less'
 
 // 5. 定义类型
 interface ComponentProps {
@@ -262,7 +260,7 @@ const Component: FC<ComponentProps> = (props) => {
 
   // 7.6 Render
   return (
-    <div className={styles.component}>
+    <div className="container mx-auto p-4">
       {/* JSX */}
     </div>
   )
@@ -278,8 +276,8 @@ export default Component
 
 - ✅ **组件目录**: PascalCase (如 `UserCard/`, `ProductList/`)
 - ✅ **组件文件**: `index.tsx` (统一使用 index)
-- ✅ **样式文件**: `index.module.less`
-- ✅ **类型文件**: `types.ts`
+- ✅ **类型文件**: `types.ts` (可选)
+- ✅ **样式**: 使用 Tailwind CSS 工具类，不创建 CSS 文件
 
 #### 3.2 组件命名
 
@@ -471,9 +469,9 @@ const Component: FC = () => {
 
 ```typescript
 // ✅ 正确：统一使用单引号
-import { Button } from 'antd-mobile'
+import { Button } from '@/components/ui/button'
 const name = 'John'
-const className = 'button-primary'
+const className = 'px-4 py-2 bg-primary text-white'
 
 // JSX 属性使用双引号
 <Button className="primary">Click</Button>

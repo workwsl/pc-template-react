@@ -1,37 +1,43 @@
-import { Button, Card, List } from 'antd'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useNavigate } from 'react-router-dom'
-import styles from './index.module.less'
 
 const About = () => {
   const navigate = useNavigate()
 
   const techStack = [
     'React 19.2.0',
-    'Ant Design 6.x',
+    'shadcn/ui + Tailwind CSS',
     'React Router 7.x',
     'TypeScript 5.9.3',
     'Vite 7.x',
-    'Less',
     'Zustand 5.x',
     'ahooks 3.x',
   ]
 
   return (
-    <div className={styles.container}>
-      <Card title="关于">
-        <div className={styles.content}>
-          <h2>技术栈</h2>
-          <List
-            dataSource={techStack}
-            renderItem={item => <List.Item>{item}</List.Item>}
-            bordered
-          />
-          <div className={styles.buttonGroup}>
-            <Button type="primary" onClick={() => navigate('/')}>
+    <div className="container mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>关于</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold">技术栈</h2>
+            <ul className="list-inside list-disc space-y-1">
+              {techStack.map((item, index) => (
+                <li key={index} className="text-base text-muted-foreground">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <Button type="button" onClick={() => navigate('/')}>
               返回首页
             </Button>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
   )

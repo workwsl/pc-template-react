@@ -1,13 +1,12 @@
 # PC Template React
 
-基于 React 19 + TypeScript + Vite + Ant Design 的 PC 端项目模板。
+基于 React 19 + TypeScript + Vite + shadcn/ui + Tailwind CSS 的 PC 端项目模板。
 
 ## ✨ 特性
 
 - ⚡️ **Vite** - 极速的开发体验
 - ⚛️ **React 19** - 最新的 React 特性
-- 🖥️ **Ant Design** - 企业级 UI 设计语言和 React 组件库
-- 🎨 **Less** - CSS 预处理器
+- 🎨 **shadcn/ui + Tailwind CSS** - 现代化的 UI 组件库和实用优先的 CSS 框架
 - 📦 **TypeScript** - 类型安全
 - 🛣️ **React Router** - 路由管理
 - 🗃️ **Zustand** - 轻量级状态管理
@@ -23,12 +22,17 @@
 - TypeScript 5.9.3
 - Vite 7.x
 - React Router 7.x
-- Ant Design 6.x
+- shadcn/ui + Tailwind CSS - UI 组件和样式框架
 - Zustand 5.x - 状态管理
 - ahooks 3.x - React Hooks 工具库
 - Axios - HTTP 请求
-- Less - CSS 预处理
-- 如果需要查看 React 18 + Ant Design 5 的旧版本，请切换到 `react18antd5` 分支
+- React Hook Form + Zod - 表单处理和验证
+- Sonner - Toast 通知
+
+## 其他分支
+
+- 如果需要查看 React 19 + Ant Design 6 的版本，请切换到 `react19-antd6` 分支
+- 如果需要查看 React 18 + antd-mobile 5 的版本，请切换到 `react18antd5` 分支
 
 ## 🚀 快速开始
 

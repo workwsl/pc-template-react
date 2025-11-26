@@ -3,7 +3,7 @@
 ## 📁 目录结构
 
 ```
-h5-template-react/
+pc-template-react/
 ├── public/                      # 静态资源目录
 │   └── vite.svg                # 不经过构建的静态文件
 │
@@ -11,8 +11,8 @@ h5-template-react/
 │   ├── services/               # API 接口管理
 │   │   ├── index.ts           # API 统一导出
 │   │   └── user/              # 用户相关接口模块
-│   │       ├── index.ts       # API 方法定义
-│   │       └── types.ts       # 类型定义
+│   │       ├── index.ts        # API 方法定义
+│   │       └── types.ts        # 类型定义
 │   │
 │   ├── assets/                 # 资源文件
 │   │   ├── images/            # 图片资源
@@ -20,6 +20,11 @@ h5-template-react/
 │   │   └── fonts/             # 字体文件
 │   │
 │   ├── components/             # 公共组件
+│   │   ├── ui/                # shadcn/ui 组件
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── input.tsx
+│   │   │   └── ...
 │   │   ├── Common/            # 通用组件
 │   │   └── Business/          # 业务组件
 │   │
@@ -34,10 +39,13 @@ h5-template-react/
 │   │   ├── BlankLayout/       # 空白布局
 │   │   └── TabLayout/         # 底部 Tab 布局
 │   │
+│   ├── lib/                    # 工具库
+│   │   ├── utils.ts           # cn() 工具函数（Tailwind 类名合并）
+│   │   └── toast.ts           # Toast 工具函数
+│   │
 │   ├── pages/                  # 页面组件
 │   │   ├── home/              # 首页
 │   │   │   ├── index.tsx
-│   │   │   ├── index.module.less
 │   │   │   └── components/    # 页面私有组件
 │   │   ├── login/             # 登录页
 │   │   ├── about/             # 关于页
@@ -56,9 +64,7 @@ h5-template-react/
 │   │       └── appStore.ts    # 应用状态
 │   │
 │   ├── styles/                 # 全局样式
-│   │   ├── index.less         # 样式入口
-│   │   ├── variables.less     # 变量定义
-│   │   └── reset.less         # 样式重置
+│   │   └── index.css          # Tailwind CSS 入口和主题变量
 │   │
 │   ├── types/                  # TypeScript 类型定义
 │   │   └── global.d.ts        # 全局类型声明
@@ -71,7 +77,6 @@ h5-template-react/
 │   │   └── request.ts         # HTTP 请求封装
 │   │
 │   ├── App.tsx                 # 根组件
-│   ├── App.module.less         # 根组件样式
 │   └── main.tsx                # 应用入口
 │
 ├── scripts/                     # 脚本工具
@@ -81,6 +86,9 @@ h5-template-react/
 ├── .env.development            # 开发环境变量
 ├── .env.production             # 生产环境变量
 ├── eslint.config.js            # ESLint 配置
+├── tailwind.config.js          # Tailwind CSS 配置
+├── postcss.config.js           # PostCSS 配置
+├── components.json             # shadcn/ui 配置
 ├── index.html                  # HTML 模板
 ├── package.json                # 项目依赖
 ├── tsconfig.json               # TypeScript 配置
@@ -110,9 +118,10 @@ h5-template-react/
 
 - **职责**: 可复用的 UI 组件
 - **原则**:
-  - 区分通用组件和业务组件
+  - `ui/` 目录存放 shadcn/ui 组件
+  - `Common/` 存放通用组件
+  - `Business/` 存放业务组件
   - 每个组件一个文件夹
-  - 包含组件、样式、类型定义
 
 ### `/constants` - 常量配置
 
@@ -138,6 +147,13 @@ h5-template-react/
   - 不包含具体业务逻辑
   - 支持灵活配置
 
+### `/lib` - 工具库
+
+- **职责**: 核心工具函数
+- **原则**:
+  - `utils.ts` - cn() 函数（Tailwind 类名合并）
+  - `toast.ts` - Toast 通知工具
+
 ### `/pages` - 页面组件
 
 - **职责**: 应用的各个页面
@@ -145,6 +161,7 @@ h5-template-react/
   - 目录使用小驼峰命名 (camelCase)
   - 页面私有组件放在 components 子目录
   - 保持组件简洁,逻辑下沉到 hooks 或 store
+  - 使用 Tailwind CSS，不创建 CSS 文件
 
 ### `/router` - 路由管理
 
@@ -166,9 +183,9 @@ h5-template-react/
 
 - **职责**: 全局样式配置
 - **原则**:
-  - 定义设计系统(颜色、字体、间距等)
-  - 提供通用样式类
-  - 与 antd-mobile 主题保持一致
+  - 使用 Tailwind CSS
+  - 定义 CSS 变量（主题颜色等）
+  - 基础字体和重置样式
 
 ### `/types` - 类型定义
 
@@ -212,16 +229,28 @@ h5-template-react/
 ### 4. 导入顺序
 
 ```typescript
-// 1. 第三方库
-import React from 'react'
-import { Button } from 'antd-mobile'
+// 1. React 相关（第三方库）
+import { FC, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-// 2. 项目内部模块(使用别名)
-import { useRequest } from '@/hooks'
-import { UserAPI } from '@/services'
+// 2. UI 组件库
+import { Button, Card } from '@/components/ui/button'
 
-// 3. 相对路径导入
-import styles from './index.module.less'
+// 3. 其他第三方库
+import classNames from 'classnames'
+
+// 4. 项目内部模块（使用 @ 别名）
+import { useRequest, useDebounce } from '@/hooks'
+import { UserAPI, ProductAPI } from '@/services'
+import { useUserStore } from '@/store'
+import { formatPhone, storage } from '@/utils'
+import { cn } from '@/lib/utils'
+
+// 5. 类型导入（使用 type 关键字）
+import type { User, UserInfo } from '@/services'
+
+// 6. 相对路径导入（组件内部的子组件、样式等）
+import UserInfo from './components/UserInfo'
 ```
 
 ## 📊 已完成的功能模块
@@ -236,11 +265,11 @@ import styles from './index.module.less'
 
 ### 2. 路由系统
 
-- ✅ React Router v6 集成
+- ✅ React Router 7.x 集成
 - ✅ 集中式路由表配置
 - ✅ 路由守卫 (权限控制)
 - ✅ 路由元信息支持
-- ✅ Hash 模式 (移动端友好)
+- ✅ Hash 模式
 
 ### 3. 工具函数库
 
@@ -258,11 +287,10 @@ import styles from './index.module.less'
 
 ### 5. 样式系统
 
-- ✅ 全局样式重置
-- ✅ Less 变量定义
-- ✅ PostCSS px 转 rem (移动端适配)
-- ✅ antd-mobile 主题集成
-- ✅ BEM 命名规范
+- ✅ Tailwind CSS 集成
+- ✅ shadcn/ui 组件库
+- ✅ CSS 变量主题系统
+- ✅ 响应式设计支持
 
 ### 6. 状态管理 (Zustand)
 
@@ -277,6 +305,7 @@ import styles from './index.module.less'
 - ✅ 路径别名 (@/)
 - ✅ ESLint 代码规范
 - ✅ TypeScript 严格模式
+- ✅ Prettier 代码格式化
 
 ## 🔧 推荐的 npm scripts
 
