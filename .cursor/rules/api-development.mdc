@@ -322,7 +322,7 @@ export * from './order'
 ```typescript
 import { FC, useEffect, useState } from 'react'
 import { ProductAPI, type ProductInfo } from '@/services'
-import { Toast } from 'antd-mobile'
+import { message } from 'antd'
 
 const ProductList: FC = () => {
   const [products, setProducts] = useState<ProductInfo[]>([])
@@ -335,7 +335,7 @@ const ProductList: FC = () => {
         const res = await ProductAPI.getList({ page: 1, pageSize: 10 })
         setProducts(res.list)
       } catch (error) {
-        Toast.show({ content: '获取产品列表失败' })
+        message.error('获取产品列表失败')
       } finally {
         setLoading(false)
       }

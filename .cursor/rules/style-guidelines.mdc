@@ -211,23 +211,29 @@ Block_Element__Modifier
 
 ```less
 .myPage {
-  padding: 16px;
+  padding: 24px;
 
-  // 小屏幕
-  @media (max-width: 375px) {
-    padding: 12px;
+  // 小屏幕（平板）
+  @media (max-width: 768px) {
+    padding: 16px;
   }
 
-  // 大屏幕
-  @media (min-width: 768px) {
-    max-width: 750px;
+  // 中等屏幕
+  @media (min-width: 769px) and (max-width: 1024px) {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  // 大屏幕（桌面）
+  @media (min-width: 1025px) {
+    max-width: 1200px;
     margin: 0 auto;
   }
 
   &_content {
     font-size: 14px;
 
-    @media (max-width: 375px) {
+    @media (max-width: 768px) {
       font-size: 12px;
     }
   }
@@ -313,71 +319,59 @@ const MyPage: FC = () => {
 }
 ```
 
-## 📱 移动端适配
+## 💻 PC 端响应式设计
 
-### 1. px 自动转 rem
+### 1. 响应式断点
 
-项目已配置 `postcss-pxtorem`，自动将 px 转换为 rem：
-
-- **基准值**：37.5（基于 375px 设计稿）
-- **使用方式**：直接写 px，自动转换
-- **忽略规则**：`:root` 选择器中的 px 不转换
+PC 端项目使用标准的响应式断点：
 
 ```less
 .myPage {
-  // 开发时写 px
-  padding: 16px; // 自动转为 0.42667rem
-  font-size: 14px; // 自动转为 0.37333rem
-  margin-top: 20px; // 自动转为 0.53333rem
+  padding: 16px;
 
-  &_button {
-    height: 44px; // 自动转为 1.17333rem
-    width: 100px; // 自动转为 2.66667rem
+  // 小屏幕（平板）
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
+
+  // 中等屏幕（小桌面）
+  @media (min-width: 769px) and (max-width: 1024px) {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  // 大屏幕（桌面）
+  @media (min-width: 1025px) {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &_content {
+    font-size: 14px;
+
+    @media (max-width: 768px) {
+      font-size: 12px;
+    }
   }
 }
-
-// ✅ 不转换：`:root` 中的值
-:root {
-  --primary-color: #1677ff;
-  --font-size: 14px; // 这里的 px 不会转换
-}
-
-// ✅ 不转换：小于等于 1px 的值
-.myPage_border {
-  border: 1px solid #eee; // 1px 不会转换，保持边框清晰
-}
 ```
 
-### 2. 视口配置
+### 2. 容器宽度
 
-在 `index.html` 中已配置：
-
-```html
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-/>
-```
-
-### 3. 安全区域适配（iPhone X 等）
+PC 端通常使用固定最大宽度和居中对齐：
 
 ```less
 .myPage {
-  padding-bottom: 20px;
+  // ✅ 推荐：固定最大宽度，居中对齐
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
 
-  // 支持安全区域
-  padding-bottom: constant(safe-area-inset-bottom); // iOS 11.0-11.2
-  padding-bottom: env(safe-area-inset-bottom); // iOS 11.2+
-}
-
-.myPage_footer {
-  position: fixed;
-  bottom: 0;
-  padding-bottom: 10px;
-
-  // 加上安全区域高度
-  padding-bottom: calc(10px + constant(safe-area-inset-bottom));
-  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  // 响应式调整
+  @media (max-width: 1024px) {
+    max-width: 100%;
+    padding: 16px;
+  }
 }
 ```
 
@@ -387,23 +381,23 @@ const MyPage: FC = () => {
 
 ```less
 .myPage {
-  // ✅ 覆盖 antd-mobile 组件样式
-  :global(.adm-button) {
-    height: 48px;
-    border-radius: 8px;
+  // ✅ 覆盖 antd 组件样式
+  :global(.ant-btn) {
+    height: 32px;
+    border-radius: 4px;
   }
 
-  :global(.adm-input) {
-    font-size: 16px;
+  :global(.ant-input) {
+    font-size: 14px;
   }
 
   // ✅ 限定作用域
   &_form {
-    :global(.adm-form-item) {
+    :global(.ant-form-item) {
       margin-bottom: 16px;
     }
 
-    :global(.adm-form-item-label) {
+    :global(.ant-form-item-label) {
       font-size: 14px;
       font-weight: 500;
     }
@@ -416,15 +410,39 @@ const MyPage: FC = () => {
 ```less
 // src/styles/variables.less
 
-// antd-mobile 主题变量
-:root:root {
-  --adm-color-primary: #1677ff;
-  --adm-color-success: #00b578;
-  --adm-color-warning: #ff8f1f;
-  --adm-color-danger: #ff3141;
+// antd 主题变量（通过 ConfigProvider 配置）
+// 在 App.tsx 中使用 ConfigProvider 的 theme 属性进行主题定制
 
-  --adm-font-size-main: 14px;
-  --adm-border-radius: 8px;
+// 或者使用 Less 变量覆盖
+@primary-color: #1677ff;
+@success-color: #52c41a;
+@warning-color: #faad14;
+@error-color: #ff4d4f;
+@border-radius-base: 4px;
+@font-size-base: 14px;
+```
+
+在组件中使用 ConfigProvider 定制主题：
+
+```typescript
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
+
+function App() {
+  return (
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        token: {
+          colorPrimary: '#1677ff',
+          borderRadius: 4,
+          fontSize: 14,
+        },
+      }}
+    >
+      {/* 应用内容 */}
+    </ConfigProvider>
+  )
 }
 ```
 

@@ -52,7 +52,7 @@ pages/myPage/
 ```typescript
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Card, Toast } from 'antd-mobile'
+import { Button, Card, message } from 'antd'
 import { useRequest } from '@/hooks'
 import { UserAPI } from '@/services'
 import styles from './index.module.less'
@@ -70,7 +70,7 @@ const MyPage: FC = () => {
       <Card title="我的页面" className={styles.myPage_card}>
         <p className={styles.myPage_content}>页面内容</p>
         <Button
-          color="primary"
+          type="primary"
           onClick={handleClick}
           className={styles.myPage_button}
         >
@@ -237,7 +237,7 @@ Block_Element__Modifier
 // src/pages/login/index.tsx
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Input, Form, Toast } from 'antd-mobile'
+import { Button, Input, Form, message } from 'antd'
 import { UserAPI } from '@/services'
 import { useUserStore } from '@/store'
 import styles from './index.module.less'
@@ -246,16 +246,17 @@ const Login: FC = () => {
   const navigate = useNavigate()
   const { login } = useUserStore()
   const [loading, setLoading] = useState(false)
+  const [form] = Form.useForm()
 
   const handleSubmit = async (values: { username: string; password: string }) => {
     setLoading(true)
     try {
       const res = await UserAPI.login(values)
       login(res.token, res.userInfo)
-      Toast.show({ content: '登录成功' })
+      message.success('登录成功')
       navigate('/')
     } catch (error) {
-      Toast.show({ content: '登录失败' })
+      message.error('登录失败')
     } finally {
       setLoading(false)
     }
@@ -270,26 +271,30 @@ const Login: FC = () => {
         </div>
 
         <Form
+          form={form}
           onFinish={handleSubmit}
           className={styles.loginPage_form}
+          layout="vertical"
         >
-          <Form.Item name="username" label="用户名">
+          <Form.Item name="username" label="用户名" rules={[{ required: true, message: '请输入用户名' }]}>
             <Input placeholder="请输入用户名" />
           </Form.Item>
 
-          <Form.Item name="password" label="密码">
-            <Input type="password" placeholder="请输入密码" />
+          <Form.Item name="password" label="密码" rules={[{ required: true, message: '请输入密码' }]}>
+            <Input.Password placeholder="请输入密码" />
           </Form.Item>
 
-          <Button
-            type="submit"
-            color="primary"
-            block
-            loading={loading}
-            className={`${styles.loginPage_submitButton} ${loading ? styles.loginPage_submitButton__loading : ''}`}
-          >
-            登录
-          </Button>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              loading={loading}
+              className={`${styles.loginPage_submitButton} ${loading ? styles.loginPage_submitButton__loading : ''}`}
+            >
+              登录
+            </Button>
+          </Form.Item>
         </Form>
       </div>
     </div>
@@ -314,10 +319,10 @@ export default Login
   &_content {
     width: 100%;
     max-width: 400px;
-    padding: 32px;
+    padding: 40px;
     background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   // Element: loginPage_logoSection
@@ -352,12 +357,10 @@ export default Login
 
   // Element: loginPage_submitButton
   &_submitButton {
-    height: 48px;
+    height: 40px;
     margin-top: 24px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 4px;
+    font-size: 14px;
     font-weight: 500;
 
     // Modifier: loginPage_submitButton__loading
@@ -433,6 +436,160 @@ export const routes: RouteConfig[] = [
   },
 ]
 ```
+
+## 🔗 路由跳转工具
+
+### 1. 在组件中使用 useNavigate Hook（推荐）
+
+在 React 组件中，优先使用 `useNavigate` Hook：
+
+```typescript
+import { useNavigate } from 'react-router-dom'
+
+const MyPage: FC = () => {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    // 跳转到指定路径
+    navigate('/home')
+    
+    // 带状态跳转
+    navigate('/user', { state: { from: 'home' } })
+    
+    // 替换当前历史记录
+    navigate('/login', { replace: true })
+    
+    // 返回上一页
+    navigate(-1)
+    
+    // 前进一页
+    navigate(1)
+  }
+
+  return <button onClick={handleClick}>跳转</button>
+}
+```
+
+### 2. 全局 navigate 工具（非组件环境）
+
+在**非组件环境**（如工具函数、API 拦截器、Store 等）中，使用全局 `navigate` 工具：
+
+参考文件：[src/router/navigate.ts](mdc:src/router/navigate.ts)
+
+#### 初始化
+
+在 `App.tsx` 中已自动初始化，无需手动调用：
+
+```typescript
+// src/App.tsx（已配置，无需修改）
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { setNavigate } from '@/router/navigate'
+
+function App() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    setNavigate(navigate)
+  }, [navigate])
+
+  // ...
+}
+```
+
+#### 使用场景
+
+**✅ 适用场景**：在非组件环境中进行路由跳转
+
+```typescript
+// ✅ 在 API 拦截器中使用
+// src/utils/request.ts
+import { navigate } from '@/router/navigate'
+
+http.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      // token 过期，自动跳转登录页
+      useUserStore.getState().logout()
+      navigate('/login', { replace: true })
+    }
+    return Promise.reject(error)
+  }
+)
+
+// ✅ 在 Store 中使用
+import { navigate } from '@/router/navigate'
+
+export const useUserStore = create<UserState>()((set) => ({
+  logout: () => {
+    set({ token: null, userInfo: null })
+    navigate('/login', { replace: true })
+  },
+}))
+
+// ✅ 在工具函数中使用
+import { navigate } from '@/router/navigate'
+
+export const handleAuthError = () => {
+  // 清除认证信息
+  clearAuth()
+  // 跳转登录页
+  navigate('/login', { replace: true })
+}
+```
+
+**❌ 不适用场景**：在组件中应使用 `useNavigate` Hook
+
+```typescript
+// ❌ 错误：在组件中使用全局 navigate
+import { navigate } from '@/router/navigate'
+
+const MyPage: FC = () => {
+  const handleClick = () => {
+    navigate('/home') // 不推荐，应使用 useNavigate Hook
+  }
+}
+
+// ✅ 正确：在组件中使用 useNavigate Hook
+import { useNavigate } from 'react-router-dom'
+
+const MyPage: FC = () => {
+  const navigate = useNavigate()
+  
+  const handleClick = () => {
+    navigate('/home') // 推荐
+  }
+}
+```
+
+#### API 说明
+
+```typescript
+import { navigate } from '@/router/navigate'
+
+// 跳转到指定路径
+navigate('/home')
+navigate('/user/123')
+
+// 带选项跳转
+navigate('/login', { replace: true })  // 替换当前历史记录
+navigate('/home', { state: { from: 'login' } })  // 带状态跳转
+
+// 历史记录导航
+navigate(-1)  // 返回上一页
+navigate(1)   // 前进一页
+navigate(-2)  // 返回上两页
+```
+
+#### 注意事项
+
+1. **初始化时机**：`navigate` 工具在 `App.tsx` 初始化后可用，在此之前调用会显示警告
+2. **类型安全**：支持 TypeScript 类型检查，与 `useNavigate` Hook 的 API 一致
+3. **使用原则**：
+   - ✅ 组件内：使用 `useNavigate` Hook
+   - ✅ 非组件环境：使用全局 `navigate` 工具
+   - ❌ 避免在组件中混用两种方式
 
 ## 📝 创建新页面检查清单
 

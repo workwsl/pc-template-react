@@ -255,6 +255,8 @@ const ProductList: FC<{ products: Product[] }> = ({ products }) => {
 
 ## 📱 设备检测工具（device.ts）
 
+> **注意**：这是 PC 端项目，设备检测工具主要用于兼容性处理和特殊场景（如检测用户是否在移动设备上访问 PC 端网站）。
+
 ### 功能特性
 
 - ✅ iOS/Android 检测
@@ -296,9 +298,10 @@ if (isAlipay()) {
   // 调用支付宝 JSSDK
 }
 
-// 检测设备类型
+// 检测设备类型（PC 端项目主要用于兼容性处理）
 if (isMobile()) {
-  console.log('移动端设备')
+  console.log('移动端设备访问 PC 端网站')
+  // 可以显示提示或跳转到移动端版本
 } else {
   console.log('PC 端设备')
 }
