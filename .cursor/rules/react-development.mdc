@@ -19,53 +19,48 @@ description: React 组件开发规范 - 组件结构、Hooks 使用、Props 设�
 - 提供默认值
 
 ```typescript
-// ✅ 示例：通用按钮组件
+// ✅ 示例：通用按钮组件（基于 shadcn/ui）
 import { FC, ReactNode } from 'react'
-import classNames from 'classnames'
-import styles from './index.module.less'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-interface ButtonProps {
+interface CustomButtonProps {
   /** 按钮类型 */
-  type?: 'primary' | 'default' | 'danger'
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
   /** 按钮大小 */
-  size?: 'small' | 'medium' | 'large'
+  size?: 'default' | 'sm' | 'lg' | 'icon'
   /** 是否禁用 */
   disabled?: boolean
   /** 按钮内容 */
   children: ReactNode
   /** 点击事件 */
   onClick?: () => void
+  /** 自定义类名 */
+  className?: string
 }
 
-const Button: FC<ButtonProps> = ({
-  type = 'default',
-  size = 'medium',
+const CustomButton: FC<CustomButtonProps> = ({
+  variant = 'default',
+  size = 'default',
   disabled = false,
   children,
   onClick,
+  className,
 }) => {
-  const handleClick = () => {
-    if (disabled) return
-    onClick?.()
-  }
-
   return (
-    <button
-      className={classNames(
-        styles.button,
-        styles[`button__${type}`],
-        styles[`button__${size}`],
-        { [styles.button__disabled]: disabled }
-      )}
-      onClick={handleClick}
+    <Button
+      variant={variant}
+      size={size}
       disabled={disabled}
+      onClick={onClick}
+      className={cn(className)}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
-export default Button
+export default CustomButton
 ```
 
 ### 2. 业务组件（Business Components）
@@ -80,19 +75,22 @@ export default Button
 - 在多个页面复用
 
 ```typescript
-// ✅ 示例：用户卡片业务组件
+// ✅ 示例：用户卡片业务组件（使用 shadcn/ui）
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Avatar } from 'antd-mobile'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { useUserStore } from '@/store'
-import styles from './index.module.less'
+import { cn } from '@/lib/utils'
 
 interface UserCardProps {
   userId: number
   showActions?: boolean
+  className?: string
 }
 
-const UserCard: FC<UserCardProps> = ({ userId, showActions = true }) => {
+const UserCard: FC<UserCardProps> = ({ userId, showActions = true, className }) => {
   const navigate = useNavigate()
   const { userInfo } = useUserStore()
 
@@ -101,18 +99,23 @@ const UserCard: FC<UserCardProps> = ({ userId, showActions = true }) => {
   }
 
   return (
-    <Card className={styles.userCard}>
-      <div className={styles.userCard_header}>
-        <Avatar src={userInfo?.avatar} />
-        <div className={styles.userCard_info}>
-          <h3>{userInfo?.username}</h3>
-          <p>{userInfo?.email}</p>
+    <Card className={cn('w-full', className)}>
+      <CardHeader className="flex flex-row items-center gap-4">
+        <Avatar>
+          <AvatarImage src={userInfo?.avatar} alt={userInfo?.username} />
+          <AvatarFallback>{userInfo?.username?.[0] || 'U'}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold">{userInfo?.username}</h3>
+          <p className="text-sm text-muted-foreground">{userInfo?.email}</p>
         </div>
-      </div>
+      </CardHeader>
       {showActions && (
-        <div className={styles.userCard_actions}>
-          <button onClick={handleViewProfile}>查看详情</button>
-        </div>
+        <CardContent>
+          <Button onClick={handleViewProfile} variant="outline" className="w-full">
+            查看详情
+          </Button>
+        </CardContent>
       )}
     </Card>
   )
@@ -138,69 +141,84 @@ export default UserCard
 // 1. 导入第三方库
 import { FC, useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Toast } from 'antd-mobile'
 
 // 2. 导入项目内部模块
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useRequest } from '@/hooks'
 import { UserAPI } from '@/services'
 import { useUserStore } from '@/store'
+import { toast } from '@/lib/toast'
+import { cn } from '@/lib/utils'
 
 // 3. 导入类型定义
-import type { User } from '@/services'
+import type { UserInfo } from '@/services'
 
-// 4. 导入样式
-import styles from './index.module.less'
-
-// 5. 定义类型
+// 4. 定义类型
 interface ComponentProps {
   userId: number
-  onUserLoad?: (user: User) => void
+  onUserLoad?: (user: UserInfo) => void
+  className?: string
 }
 
-// 6. 定义常量
+// 5. 定义常量
 const DEFAULT_PAGE_SIZE = 10
 
-// 7. 组件定义
-const UserProfile: FC<ComponentProps> = ({ userId, onUserLoad }) => {
-  // 7.1 Hooks（Router、Store 等）
+// 6. 组件定义
+const UserProfile: FC<ComponentProps> = ({ userId, onUserLoad, className }) => {
+  // 6.1 Hooks（Router、Store 等）
   const navigate = useNavigate()
   const { userInfo } = useUserStore()
 
-  // 7.2 State
+  // 6.2 State
   const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<User | null>(null)
+  const [data, setData] = useState<UserInfo | null>(null)
 
-  // 7.3 Computed values（useMemo）
+  // 6.3 Computed values（useMemo）
   const displayName = useMemo(() => {
     return data?.username || '未命名用户'
   }, [data])
 
-  // 7.4 Methods（useCallback）
+  // 6.4 Methods（useCallback）
   const handleRefresh = useCallback(() => {
     setLoading(true)
     // 刷新逻辑
+    setTimeout(() => {
+      setLoading(false)
+      toast.success('刷新成功')
+    }, 1000)
   }, [])
 
-  // 7.5 Effects
+  // 6.5 Effects
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await UserAPI.getUserInfo()
-      setData(user)
-      onUserLoad?.(user)
+      try {
+        const user = await UserAPI.getUserInfo()
+        setData(user)
+        onUserLoad?.(user)
+      } catch (error) {
+        toast.error('获取用户信息失败')
+      }
     }
     fetchUser()
   }, [userId, onUserLoad])
 
-  // 7.6 Render
+  // 6.6 Render
   return (
-    <div className={styles.userProfile}>
-      <h1>{displayName}</h1>
-      <Button onClick={handleRefresh}>刷新</Button>
-    </div>
+    <Card className={cn('w-full', className)}>
+      <CardHeader>
+        <CardTitle>{displayName}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Button onClick={handleRefresh} disabled={loading}>
+          {loading ? '刷新中...' : '刷新'}
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
 
-// 8. 导出
+// 7. 导出
 export default UserProfile
 ```
 
@@ -395,6 +413,103 @@ interface UserListProps {
 }
 ```
 
+## 🛣️ 路由跳转规范
+
+### 1. 组件内使用 useNavigate Hook（推荐）
+
+在 React 组件内，优先使用 `useNavigate()` Hook：
+
+```typescript
+import { useNavigate } from 'react-router-dom'
+
+const MyComponent: FC = () => {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate('/home')
+  }
+
+  const handleGoBack = () => {
+    navigate(-1) // 返回上一页
+  }
+
+  return (
+    <Button onClick={handleClick}>跳转</Button>
+  )
+}
+```
+
+### 2. 非组件环境使用全局 navigate 函数
+
+在工具函数、API 拦截器、Store Actions 等非组件环境中，使用全局 `navigate()` 函数：
+
+```typescript
+// ✅ 正确：在工具函数中使用
+import { navigate } from '@/router/navigate'
+
+export const handleLogout = () => {
+  // 清除 token 等逻辑
+  clearToken()
+  // 跳转到登录页
+  navigate('/login', { replace: true })
+}
+
+// ✅ 正确：在 API 拦截器中使用
+request.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      navigate('/login', { replace: true })
+    }
+    return Promise.reject(error)
+  }
+)
+
+// ✅ 正确：在 Store Actions 中使用
+export const useUserStore = create<UserState>()((set, get) => ({
+  logout: () => {
+    set({ token: null, userInfo: null })
+    navigate('/login', { replace: true })
+  },
+}))
+```
+
+### 3. 全局 navigate 函数说明
+
+**文件位置**：`src/router/navigate.ts`
+
+**初始化**：在 `App.tsx` 中自动初始化，无需手动调用 `setNavigate()`
+
+**使用场景**：
+- ✅ API 请求拦截器中（如 401 跳转登录）
+- ✅ Store Actions 中（如退出登录）
+- ✅ 工具函数中（如权限检查失败跳转）
+- ✅ 事件监听器中（如 WebSocket 断开跳转）
+- ❌ 不要在组件内使用（应使用 `useNavigate()` Hook）
+
+**API 说明**：
+
+```typescript
+// 跳转到指定路径
+navigate('/home')
+navigate('/user/123')
+
+// 带选项跳转
+navigate('/login', { replace: true })
+navigate('/home', { state: { from: '/previous' } })
+
+// 返回上一页
+navigate(-1)
+
+// 前进一页
+navigate(1)
+```
+
+**注意事项**：
+- 全局 `navigate()` 函数在路由初始化前调用会输出警告，但不会报错
+- 在组件内优先使用 `useNavigate()` Hook，更符合 React 规范
+- 全局 `navigate()` 主要用于无法使用 Hook 的场景
+
 ## 🎯 JSX 编写规范
 
 ### 1. 组件属性
@@ -478,7 +593,13 @@ const handleDelete = useCallback((id: number) => {
 ```typescript
 // ✅ 正确：使用 React.memo
 const UserCard = React.memo<UserCardProps>(({ user }) => {
-  return <div>{user.name}</div>
+  return (
+    <Card>
+      <CardContent>
+        <p className="text-base">{user.name}</p>
+      </CardContent>
+    </Card>
+  )
 })
 
 // ✅ 正确：使用 useMemo 缓存计算结果
@@ -500,20 +621,22 @@ const handleUserClick = useCallback((userId: number) => {
   <UserCard key={user.id} user={user} />
 ))}
 
-// ✅ 正确：大量数据使用虚拟列表
-import { List } from 'react-virtualized'
+// ✅ 正确：大量数据使用虚拟列表（使用 react-window 或 react-virtual）
+// 注意：需要先安装 react-window: npm install react-window
+import { FixedSizeList } from 'react-window'
 
-<List
-  width={300}
+<FixedSizeList
   height={600}
-  rowCount={users.length}
-  rowHeight={50}
-  rowRenderer={({ index, key, style }) => (
-    <div key={key} style={style}>
+  itemCount={users.length}
+  itemSize={50}
+  width="100%"
+>
+  {({ index, style }) => (
+    <div style={style}>
       <UserCard user={users[index]} />
     </div>
   )}
-/>
+</FixedSizeList>
 ```
 
 ### 3. 懒加载

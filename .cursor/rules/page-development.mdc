@@ -33,19 +33,22 @@ src/pages/
 └── order_list/              # ❌ 不使用 snake_case
 ```
 
-## 📄 必需文件结构
+## 📄 文件结构
 
-每个页面目录必须包含：
+每个页面目录至少包含：
 
 ```
 pages/myPage/
 ├── index.tsx              # 页面组件（必需）
-└── components/            # 页面私有组件目录（必需，即使为空）
+└── components/            # 页面私有组件目录（可选，有私有组件时创建）
     └── MyComponent/
         └── index.tsx
 ```
 
-**注意**：不再需要 `index.module.less` 文件，所有样式使用 Tailwind CSS 工具类。
+**注意**：
+- `index.tsx` 是必需文件
+- `components/` 目录是可选的，只有当页面有私有组件时才需要创建
+- 不再需要 `index.module.less` 文件，所有样式使用 Tailwind CSS 工具类
 
 ### index.tsx - 页面组件
 
@@ -289,6 +292,58 @@ const Login = () => {
 export default Login
 ```
 
+## 🛣️ 路由跳转
+
+### 1. 组件内使用 useNavigate Hook（推荐）
+
+在页面组件内，使用 `useNavigate()` Hook 进行路由跳转：
+
+```typescript
+import { useNavigate } from 'react-router-dom'
+
+const MyPage = () => {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate('/home')
+  }
+
+  const handleGoBack = () => {
+    navigate(-1) // 返回上一页
+  }
+
+  return (
+    <Button onClick={handleClick}>跳转</Button>
+  )
+}
+```
+
+### 2. 非组件环境使用全局 navigate 函数
+
+在工具函数、API 拦截器等非组件环境中，使用全局 `navigate()` 函数：
+
+```typescript
+import { navigate } from '@/router/navigate'
+
+// 在工具函数中使用
+export const redirectToLogin = () => {
+  navigate('/login', { replace: true })
+}
+
+// 在 API 拦截器中使用
+request.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      navigate('/login', { replace: true })
+    }
+    return Promise.reject(error)
+  }
+)
+```
+
+**注意**：全局 `navigate()` 函数在 `App.tsx` 中自动初始化，无需手动设置。
+
 ## 🛣️ 路由配置
 
 在 `src/router/routes.tsx` 中配置路由：
@@ -346,8 +401,8 @@ export const routes: RouteConfig[] = [
 ## 📝 创建新页面检查清单
 
 - [ ] 目录名使用小驼峰命名（camelCase）
-- [ ] 包含 `index.tsx` 文件
-- [ ] 创建 `components/` 目录（即使为空）
+- [ ] 包含 `index.tsx` 文件（必需）
+- [ ] 如有私有组件，创建 `components/` 目录（可选）
 - [ ] 使用 Tailwind CSS 工具类，不创建 CSS 文件
 - [ ] 使用 shadcn/ui 组件
 - [ ] 在 `src/router/routes.tsx` 中添加路由配置
@@ -419,10 +474,9 @@ import styles from './index.module.less'  // ❌ 不使用
 // 错误 3: 使用内联样式
 <div style={{ padding: '16px' }}>  // ❌ 不使用
 
-// 错误 4: 缺少必需文件
-pages/myPage/
-├── index.tsx           # 只有组件文件
-└── (缺少 components/ 目录)
+// 错误 4: 页面目录使用错误的命名
+pages/MyPage/          # ❌ 不使用 PascalCase
+pages/my-page/         # ❌ 不使用 kebab-case
 ```
 
 ### ✅ 正确示例
@@ -438,10 +492,12 @@ src/pages/productDetail/
 // 正确 3: 使用 shadcn/ui 组件
 import { Button } from '@/components/ui/button'  // ✅ 使用
 
-// 正确 4: 完整的文件结构
+// 正确 4: 基础文件结构（components 目录可选）
 pages/myPage/
-├── index.tsx
-└── components/
+├── index.tsx          # 必需
+└── components/        # 可选，有私有组件时创建
+    └── MyComponent/
+        └── index.tsx
 ```
 
 ## 🎯 快速记忆口诀

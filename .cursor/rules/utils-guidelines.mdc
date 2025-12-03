@@ -79,6 +79,30 @@ const result = await http.post<User>('/users', data, {
 })
 ```
 
+### 在拦截器中使用全局 navigate
+
+当需要在 API 拦截器中进行路由跳转时（如 401 跳转登录），使用全局 `navigate()` 函数：
+
+```typescript
+import { navigate } from '@/router/navigate'
+
+// 响应拦截器中使用全局 navigate
+http.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      // 清除 token
+      useUserStore.getState().logout()
+      // 跳转到登录页
+      navigate('/login', { replace: true })
+    }
+    return Promise.reject(error)
+  }
+)
+```
+
+**注意**：在工具函数、拦截器等非组件环境中，必须使用全局 `navigate()` 函数，不能使用 `useNavigate()` Hook。
+
 ### 自定义拦截器
 
 ```typescript
@@ -578,12 +602,46 @@ export const parseJSON = <T>(str: string): T | null => {
 }
 ```
 
+## 🛣️ 工具函数中的路由跳转
+
+在工具函数中需要进行路由跳转时，使用全局 `navigate()` 函数：
+
+```typescript
+import { navigate } from '@/router/navigate'
+
+// ✅ 正确：在工具函数中使用全局 navigate
+export const redirectToLogin = () => {
+  navigate('/login', { replace: true })
+}
+
+export const handleLogout = () => {
+  // 清除 token 等逻辑
+  clearToken()
+  // 跳转到登录页
+  navigate('/login', { replace: true })
+}
+
+// ❌ 错误：不能在工具函数中使用 useNavigate Hook
+export const wrongFunction = () => {
+  const navigate = useNavigate() // ❌ Hook 只能在组件中使用
+}
+```
+
+**使用场景**：
+- ✅ API 拦截器中（如 401 跳转登录）
+- ✅ 工具函数中（如权限检查失败跳转）
+- ✅ Store Actions 中（如退出登录）
+- ❌ 不要在组件内使用（应使用 `useNavigate()` Hook）
+
+**参考**：[路由跳转规范](mdc:.cursor/rules/react-development.mdc#路由跳转规范)
+
 ## 📚 相关文档
 
 - [HTTP 请求工具](mdc:src/utils/request.ts)
 - [存储工具](mdc:src/utils/storage.ts)
 - [格式化工具](mdc:src/utils/format.ts)
 - [设备检测工具](mdc:src/utils/device.ts)
+- [路由跳转规范](mdc:.cursor/rules/react-development.mdc#路由跳转规范)
 - [项目结构指南](mdc:docs/PROJECT_GUIDE.md)
 
 ## 🎯 工具函数检查清单

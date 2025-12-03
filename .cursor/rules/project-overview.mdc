@@ -50,10 +50,8 @@ src/
 ├── hooks/                  # 自定义 Hooks
 │   └── index.ts           # 导出 ahooks 和自定义 Hooks
 │
-├── layouts/                # 布局组件
-│   ├── BasicLayout/       # 基础布局（带导航栏）
-│   ├── BlankLayout/       # 空白布局
-│   └── TabLayout/         # 底部 Tab 布局
+├── layouts/                # 布局组件（可选，按需创建）
+│   └── (待实现布局组件)
 │
 ├── lib/                    # 工具库
 │   ├── utils.ts           # cn() 工具函数（Tailwind 类名合并）
