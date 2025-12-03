@@ -2,6 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 import { message } from 'antd'
 import { useUserStore } from '../store'
+import { navigate } from '@/router/navigate'
 
 /**
  * HTTP 请求封装
@@ -62,7 +63,7 @@ request.interceptors.response.use(
           message.error('未授权,请重新登录')
           // 清除 token,跳转登录页
           useUserStore.getState().logout()
-          window.location.hash = '#/'
+          navigate('/login', { replace: true })
           break
         case 403:
           message.error('没有权限访问')
