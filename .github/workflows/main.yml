@@ -22,22 +22,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # 一个job任务，任务名为build
+  build:
+	# runs-on 指定job任务运行所需要的虚拟机环境
     runs-on: ubuntu-latest
+	# steps是每个Job的运行步骤，可以包含一个或多个步骤
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+	# action命令，切换分支获取源码
+	# 来自官方脚本：https://github.com/marketplace/actions/checkout
+    - uses: actions/checkout@v2
+	# action命令，打印一行日志
+    - name: Run a one-line script
+      run: echo Hello, world!
+	# action命令，打印多行日志
+    - name: Run a multi-line script
+      run: |
+        echo Add other actions to build,
+        echo test, and deploy your project.
