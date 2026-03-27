@@ -1,13 +1,14 @@
 # PC Template React
 
-基于 React 19 + TypeScript + Vite + Ant Design 的 PC 端项目模板。
+基于 React 19 + TypeScript + Vite + Ant Design + TailwindCSS v4 的 PC 端项目模板。
 
 ## ✨ 特性
 
 - ⚡️ **Vite** - 极速的开发体验
 - ⚛️ **React 19** - 最新的 React 特性
-- 🖥️ **Ant Design** - 企业级 UI 设计语言和 React 组件库
-- 🎨 **Less** - CSS 预处理器
+- 🎨 **TailwindCSS v4（优先）** - utility-first 样式方案
+- 🖥️ **Ant Design** - 企业级 UI 设计语言和 React 组件库（与 Tailwind 共存）
+- 🎨 **Less（补充）** - 复杂场景/存量样式的补充方案
 - 📦 **TypeScript** - 类型安全
 - 🛣️ **React Router** - 路由管理
 - 🗃️ **Zustand** - 轻量级状态管理
@@ -28,7 +29,18 @@
 - ahooks 3.x - React Hooks 工具库
 - Axios - HTTP 请求
 - Less - CSS 预处理
+- TailwindCSS v4 - 样式优先方案
 - 如果需要查看 React 18 + Ant Design 5 的旧版本，请切换到 `react18antd5` 分支
+
+## 🎨 样式策略（重要）
+
+- 默认优先使用 TailwindCSS utility class 开发页面样式
+- antd 组件样式通过 layer 策略降权，保证 Tailwind 更易覆盖
+- `*.module.less` 仅用于 Tailwind 难以表达的复杂结构或存量改造
+- 相关实现位于：
+  - `src/styles/tailwind.css`
+  - `src/main.tsx`
+  - `postcss.config.js`
 
 ## 🚀 快速开始
 

@@ -159,6 +159,6 @@ docs/
 - [React 官方文档](https://react.dev/)
 - [TypeScript 文档](https://www.typescriptlang.org/)
 - [Vite 文档](https://vitejs.dev/)
-- [antd-mobile 文档](https://mobile.ant.design/)
+- [antd 文档](https://ant.design/)
 - [Zustand 文档](https://docs.pmnd.rs/zustand)
 - [ahooks 文档](https://ahooks.js.org/)

@@ -35,7 +35,7 @@ src/
 
 ```typescript
 // src/pages/myPage/index.tsx
-import { Button, Card } from 'antd-mobile'
+import { Button, Card } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import styles from './index.module.less'
 
@@ -323,7 +323,7 @@ pages/
 
 ## 🎨 UI 组件使用
 
-antd-mobile 常用组件示例:
+antd 常用组件示例:
 
 ```typescript
 import {
@@ -331,12 +331,8 @@ import {
   Input,
   Card,
   List,
-  Toast,
-  Dialog,
-  Picker,
-  DatePicker,
-  InfiniteScroll,
-} from 'antd-mobile'
+  Modal,
+} from 'antd'
 
 // 按钮
 <Button color="primary">主要按钮</Button>
@@ -347,16 +343,15 @@ import {
 // 卡片
 <Card title="卡片标题">内容</Card>
 
-// 列表
-<List>
-  <List.Item>列表项</List.Item>
-</List>
 
 // 提示
-Toast.show({ content: '操作成功' })
+Modal.success({ content: '操作成功' })
+Modal.error({ content: '操作失败' })
+Modal.warning({ content: '操作警告' })
+Modal.info({ content: '操作信息' })
 
 // 对话框
-Dialog.confirm({ content: '确认删除?' })
+Modal.confirm({ title: '确认删除?', content: '确认删除?' })
 ```
 
 ## 🐛 常见问题
@@ -383,5 +378,5 @@ A: 运行 `npm run type-check` 查看详细错误信息。
 - 查看 [API 开发规范](./API_GUIDE.md) - 学习 Services 模块开发
 - 查看 [页面开发规范](./PAGE_GUIDE.md) - 学习页面和样式规范
 - 查看 [状态管理指南](./ZUSTAND_GUIDE.md) - 学习 Zustand 使用
-- 参考 [antd-mobile 文档](https://mobile.ant.design/)
+- 参考 [antd 文档](https://ant.design/)
 - 参考 [ahooks 文档](https://ahooks.js.org/)

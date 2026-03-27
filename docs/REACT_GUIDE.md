@@ -102,7 +102,7 @@ export default Button
 // src/components/Business/UserCard/index.tsx
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Avatar } from 'antd-mobile'
+import { Card } from 'antd'
 import { useUserStore } from '@/store'
 import styles from './index.module.less'
 
@@ -124,7 +124,7 @@ const UserCard: FC<UserCardProps> = ({ userId, showActions = true }) => {
   return (
     <Card className={styles.userCard}>
       <div className={styles.userCard_header}>
-        <Avatar src={userInfo?.avatar} className={styles.userCard_avatar} />
+        <img src={userInfo?.avatar} className={styles.userCard_avatar} />
         <div className={styles.userCard_info}>
           <h3 className={styles.userCard_name}>{userInfo?.username}</h3>
           <p className={styles.userCard_email}>{userInfo?.email}</p>
@@ -215,7 +215,7 @@ ComponentName/
 // 1. 导入第三方库
 import { FC, useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Toast } from 'antd-mobile'
+import { Button, message, Modal } from 'antd'
 
 // 2. 导入项目内部模块
 import { useRequest } from '@/hooks'
@@ -471,7 +471,7 @@ const Component: FC = () => {
 
 ```typescript
 // ✅ 正确：统一使用单引号
-import { Button } from 'antd-mobile'
+import { Button } from 'antd'
 const name = 'John'
 const className = 'button-primary'
 

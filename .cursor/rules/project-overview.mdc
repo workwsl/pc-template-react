@@ -5,7 +5,7 @@ description: PC Template React 项目概览 - 技术栈、目录结构和开发�
 
 # PC Template React 项目概览
 
-这是一个基于 React 19 + TypeScript + Vite + antd 的 PC 端项目模板。
+这是一个基于 React 19 + TypeScript + Vite + antd + TailwindCSS v4 的 PC 端项目模板。
 
 ## 🎯 核心技术栈
 
@@ -14,10 +14,11 @@ description: PC Template React 项目概览 - 技术栈、目录结构和开发�
 - **Vite 7.x** - 极速的开发构建工具
 - **React Router 7.x** - Hash 模式路由
 - **antd 6.0.0** - 企业级 PC 端 UI 组件库
+- **TailwindCSS v4** - 优先使用的样式方案（utility-first）
 - **Zustand 5.x** - 轻量级状态管理（替代 Redux）
 - **ahooks 3.x** - 70+ 个高质量 React Hooks 工具库
 - **Axios** - HTTP 请求库，已封装请求/响应拦截器
-- **Less** - CSS 预处理器，支持 CSS Modules
+- **Less + CSS Modules** - 存量样式与复杂场景补充方案
 
 ## 📁 项目目录结构
 
@@ -111,11 +112,13 @@ import { formatPhone } from '@/utils'
 
 ### 3. 样式规范
 
-- 使用 CSS Modules（文件名：`*.module.less`）
-- 遵循 BEM 命名规范：
+- 优先使用 TailwindCSS utility class 编写页面样式
+- 若 Tailwind 难以表达或涉及复杂嵌套，再使用 CSS Modules（`*.module.less`）
+- 使用 Less 时遵循 BEM 命名规范：
   - Block: `loginPage`
   - Element: `loginPage_header`（使用单下划线 `_`）
   - Modifier: `loginPage__loading`（使用双下划线 `__`）
+- 与 antd 共存时遵循 layer 策略，保证 Tailwind 样式优先覆盖
 
 ### 4. API 接口规范
 

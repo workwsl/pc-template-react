@@ -1,9 +1,49 @@
 ---
-globs: '**/*.{less,css}'
-description: 样式编写规范 - BEM 命名、Less 使用、CSS Modules、移动端适配
+globs: '**/*.{tsx,jsx,less,css}'
+description: 样式编写规范 - Tailwind 优先，Less/CSS Modules 补充，兼容 antd layer
 ---
 
 # 样式编写规范
+
+## 核心原则（优先级）
+
+1. 优先使用 TailwindCSS v4 utility class 完成样式开发
+2. Tailwind 不易表达的复杂结构，再使用 `*.module.less`
+3. 避免在新页面中优先写全量 Less，优先尝试 Tailwind 组合
+4. 与 antd 共存时采用 `StyleProvider layer` + `@layer theme, base, antd, components, utilities;`
+
+## Tailwind 使用规范
+
+### 1. 推荐场景
+
+- 页面布局（`flex/grid/gap/padding/margin`）
+- 字体与颜色（`text-*`, `font-*`, `bg-*`, `border-*`）
+- 状态样式（`hover:`, `focus:`, `disabled:`）
+- 响应式（`sm/md/lg/xl`）
+
+### 2. 不推荐场景
+
+- 复杂覆盖第三方深层结构且类名难控
+- 超长 className 导致可读性严重下降（可抽离组件或少量模块样式）
+
+### 3. 书写建议
+
+```tsx
+// ✅ 推荐：Tailwind 优先
+<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-6 py-4">
+  <h1 className="text-xl font-semibold text-slate-800">Dashboard</h1>
+  <button className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+    保存
+  </button>
+</div>
+```
+
+```tsx
+// ⚠️ 可接受：Tailwind + CSS Modules 混用（仅复杂场景）
+<section className={`${styles.dashboardPanel} rounded-xl bg-white p-6 shadow-sm`}>
+  ...
+</section>
+```
 
 ## 🎨 BEM 命名规范
 
@@ -376,6 +416,8 @@ PC 端通常使用固定最大宽度和居中对齐：
 ```
 
 ## 🎨 覆盖第三方组件样式
+
+优先使用 Tailwind 对 antd 组件进行覆盖；仅当 Tailwind 无法满足时，才使用 `:global(.ant-*)`。
 
 ### 1. 使用 :global()
 

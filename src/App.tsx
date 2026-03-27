@@ -1,4 +1,5 @@
 import { ConfigProvider } from 'antd'
+import { StyleProvider } from '@ant-design/cssinjs';
 import zhCN from 'antd/locale/zh_CN'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -12,9 +13,11 @@ function App() {
     setNavigate(navigate)
   }, [navigate])
   return (
-    <ConfigProvider locale={zhCN}>
-      <Router />
-    </ConfigProvider>
+    <StyleProvider layer>
+      <ConfigProvider locale={zhCN}>
+        <Router />
+      </ConfigProvider>
+    </StyleProvider>
   )
 }
 

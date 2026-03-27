@@ -138,7 +138,7 @@ import { FC, useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // 2. UI 组件库
-import { Button, Toast, Dialog } from 'antd-mobile'
+import { Button, message, Modal } from 'antd'
 
 // 3. 其他第三方库
 import classNames from 'classnames'
@@ -159,7 +159,7 @@ import styles from './index.module.less'
 
 // ❌ 错误：无序导入
 import styles from './index.module.less'
-import { Button } from 'antd-mobile'
+import { Button } from 'antd'
 import { useState } from 'react'
 import { UserAPI } from '@/services'
 ```

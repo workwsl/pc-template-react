@@ -5,6 +5,12 @@ description: React 组件开发规范 - 组件结构、Hooks 使用、Props 设�
 
 # React 开发规范
 
+## 样式实现约定（新增）
+
+- 页面与组件样式默认优先使用 TailwindCSS utility class
+- 仅在 Tailwind 难以表达时使用 `*.module.less`
+- 对 antd 组件做样式定制时，优先 Tailwind class；其次再用模块样式 + `:global(.ant-*)`
+
 ## 📦 组件分类
 
 ### 1. 通用组件（Common Components）

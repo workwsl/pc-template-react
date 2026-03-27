@@ -263,16 +263,16 @@ const Login = () => {
 
 ### 4. 全局样式覆盖
 
-当需要覆盖第三方组件（如 antd-mobile）的样式时，使用 `:global()`：
+当需要覆盖第三方组件（如 antd）的样式时，使用 `:global()`：
 
 ```less
 .loginPage_form {
-  :global(.adm-form-item-label) {
+  :global(.ant-form-item-label) {
     font-size: 14px;
     font-weight: 500;
   }
 
-  :global(.adm-input) {
+  :global(.ant-input) {
     height: 48px;
     border-radius: 8px;
   }

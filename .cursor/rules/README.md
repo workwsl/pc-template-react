@@ -1,6 +1,6 @@
 # Cursor 规则说明
 
-本目录包含了 H5 Template React 项目的完整 Cursor 规则集，帮助 AI 更好地理解项目结构、代码规范和开发流程。
+本目录包含了 XBB Agent Project React 项目的完整 Cursor 规则集，帮助 AI 更好地理解项目结构、代码规范和开发流程。
 
 ## 📁 规则文件列表
 

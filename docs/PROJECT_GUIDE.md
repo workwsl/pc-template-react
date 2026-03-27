@@ -166,9 +166,9 @@ h5-template-react/
 
 - **职责**: 全局样式配置
 - **原则**:
-  - 定义设计系统(颜色、字体、间距等)
-  - 提供通用样式类
-  - 与 antd-mobile 主题保持一致
+  - 优先使用 TailwindCSS v4（`tailwind.css`）进行样式开发
+  - Less/CSS Modules 仅用于复杂场景与存量样式
+  - 与 antd 共存时使用 layer 策略保证 Tailwind 覆盖优先
 
 ### `/types` - 类型定义
 
@@ -214,7 +214,7 @@ h5-template-react/
 ```typescript
 // 1. 第三方库
 import React from 'react'
-import { Button } from 'antd-mobile'
+import { Button } from 'antd'
 
 // 2. 项目内部模块(使用别名)
 import { useRequest } from '@/hooks'
@@ -259,38 +259,26 @@ import styles from './index.module.less'
 ### 5. 样式系统
 
 - ✅ 全局样式重置
+- ✅ TailwindCSS v4 接入（优先）
 - ✅ Less 变量定义
-- ✅ PostCSS px 转 rem (移动端适配)
-- ✅ antd-mobile 主题集成
+- ✅ antd 主题集成
 - ✅ BEM 命名规范
 
 ### 6. 状态管理 (Zustand)
 
 - ✅ userStore - 用户状态管理
-- ✅ appStore - 应用全局状态
-- ✅ 数据持久化
-- ✅ 与路由守卫集成
 
-### 7. 开发配置
-
-- ✅ 环境变量配置
-- ✅ 路径别名 (@/)
-- ✅ ESLint 代码规范
-- ✅ TypeScript 严格模式
-
-## 🔧 推荐的 npm scripts
-
-```json
 {
-  "dev": "vite",
-  "build": "tsc -b && vite build",
-  "build:test": "tsc -b && vite build --mode test",
-  "preview": "vite preview",
-  "lint": "eslint .",
-  "lint:fix": "eslint . --fix",
-  "type-check": "tsc --noEmit",
-  "check:types": "node scripts/check-api-types.js"
+"dev": "vite",
+"build": "tsc -b && vite build",
+"build:test": "tsc -b && vite build --mode test",
+"preview": "vite preview",
+"lint": "eslint .",
+"lint:fix": "eslint . --fix",
+"type-check": "tsc --noEmit",
+"check:types": "node scripts/check-api-types.js"
 }
+
 ```
 
 ## 📚 相关文档
@@ -299,3 +287,4 @@ import styles from './index.module.less'
 - [API 开发规范](./API_GUIDE.md) - Services 模块开发规范
 - [页面开发规范](./PAGE_GUIDE.md) - 页面目录和样式规范
 - [状态管理指南](./ZUSTAND_GUIDE.md) - Zustand 使用指南
+```

@@ -1,0 +1,9 @@
+@layer theme, base, reset, antd, components, utilities;
+
+/* antd reset 样式放在 reset 层，避免覆盖 antd 降权层策略 */
+@import url('antd/dist/reset.css') layer(reset);
+
+/* antd 样式 */
+@import url('antd/dist/antd.css') layer(antd);
+
+@import 'tailwindcss';
