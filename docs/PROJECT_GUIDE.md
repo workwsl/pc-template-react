@@ -1,5 +1,11 @@
 # 项目结构指南
 
+## 项目定位
+
+- **工程类型**：基于 Vite + React 的 **PC 端 Web 模板**，用于快速搭建中后台或桌面优先类产品。
+- **边界说明**：具体业务域、多端划分与权限以后端及产品约定为准；模板本身不绑定某一垂直业务。
+- **仓库标识**：文档中的根目录名以 `pc-template-react/` 为准（与本地克隆目录名一致即可；Fork 后可替换为你的项目根目录名）。
+
 ## 📁 目录结构
 
 ```
@@ -34,11 +40,6 @@ pc-template-react/
 │   ├── hooks/                  # 自定义 Hooks
 │   │   └── index.ts           # Hooks 统一导出
 │   │
-│   ├── layouts/                # 布局组件
-│   │   ├── BasicLayout/       # 基础布局(带导航栏)
-│   │   ├── BlankLayout/       # 空白布局
-│   │   └── TabLayout/         # 底部 Tab 布局
-│   │
 │   ├── lib/                    # 工具库
 │   │   ├── utils.ts           # cn() 工具函数（Tailwind 类名合并）
 │   │   └── toast.ts           # Toast 工具函数
@@ -53,9 +54,10 @@ pc-template-react/
 │   │   └── notFound/          # 404 页面
 │   │
 │   ├── router/                 # 路由配置
-│   │   ├── index.tsx          # 路由入口
+│   │   ├── index.tsx          # 路由入口（useRoutes + 守卫包裹）
 │   │   ├── routes.tsx         # 路由表配置
-│   │   └── AuthGuard.tsx      # 路由守卫
+│   │   ├── AuthGuard.tsx      # 路由守卫
+│   │   └── navigate.ts        # 非组件内 navigate（需 App 注入）
 │   │
 │   ├── store/                  # 状态管理
 │   │   ├── index.ts           # Store 配置和导出
@@ -139,13 +141,10 @@ pc-template-react/
   - 单一职责原则
   - 优先使用 ahooks 提供的 Hooks
 
-### `/layouts` - 布局组件
+### 布局与壳层（本模板）
 
-- **职责**: 页面级布局容器
-- **原则**:
-  - 处理页面通用结构
-  - 不包含具体业务逻辑
-  - 支持灵活配置
+- **现状**：仓库**未**预置 `src/layouts/` 目录；需要传统 layout 目录时可自行新建。
+- **推荐**：中后台「侧栏 + 顶栏 + `<Outlet />`」类壳层放在 `src/pages/components/`，由路由父节点引用（与 `docs/PAGE_GUIDE.md`、`.cursor/rules/modules/pages.mdc` 一致）。
 
 ### `/lib` - 工具库
 
@@ -265,11 +264,13 @@ import UserInfo from './components/UserInfo'
 
 ### 2. 路由系统
 
-- ✅ React Router 7.x 集成
-- ✅ 集中式路由表配置
-- ✅ 路由守卫 (权限控制)
-- ✅ 路由元信息支持
-- ✅ Hash 模式
+- ✅ React Router 7.x 集成（`src/main.tsx` 使用 **`HashRouter`**，生产环境 URL 含 `#/` 前缀属预期行为）
+- ✅ 集中式路由表配置（`src/router/routes.tsx`）
+- ✅ 路由守卫与 `meta.requiresAuth`（`src/router/AuthGuard.tsx`）
+- ✅ 路由元信息（`title`、`requiresAuth` 等）
+- ✅ 模板默认页面：`/` 首页、`/login`、`/about`、`/user`（需登录）、通配 404
+
+若需 **History 模式**（无 hash），将 `HashRouter` 改为 `BrowserRouter` 并配置部署侧 `fallback`（如 SPA `try_files`）。
 
 ### 3. 工具函数库
 
@@ -307,23 +308,22 @@ import UserInfo from './components/UserInfo'
 - ✅ TypeScript 严格模式
 - ✅ Prettier 代码格式化
 
-## 🔧 推荐的 npm scripts
+## 🔧 npm scripts（与 `package.json` 一致）
 
-```json
-{
-  "dev": "vite",
-  "build": "tsc -b && vite build",
-  "build:test": "tsc -b && vite build --mode test",
-  "preview": "vite preview",
-  "lint": "eslint .",
-  "lint:fix": "eslint . --fix",
-  "type-check": "tsc --noEmit",
-  "check:types": "node scripts/check-api-types.js"
-}
-```
+| 命令 | 说明 |
+| ---- | ---- |
+| `npm run dev` | 本地开发（Vite） |
+| `npm run build` | `tsc -b` + 生产构建 |
+| `npm run preview` | 预览构建产物 |
+| `npm run lint` / `npm run lint:fix` | ESLint |
+| `npm run format` / `npm run format:check` | Prettier（`src/**` 约定后缀） |
+| `npm run check:types` | `scripts/check-api-types.js`：Services 模块类型命名与重复检测（非全量 `tsc`） |
+| `npm run commit` | Commitizen（`git-cz`） |
+| `npm run changelog` | standard-version |
 
 ## 📚 相关文档
 
+- [协作与 AI 入口](../AGENTS.md) - 技术栈摘要、规则与文档索引
 - [快速开始指南](./QUICK_START.md) - 5分钟快速上手
 - [API 开发规范](./API_GUIDE.md) - Services 模块开发规范
 - [页面开发规范](./PAGE_GUIDE.md) - 页面目录和样式规范

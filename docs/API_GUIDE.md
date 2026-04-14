@@ -66,29 +66,41 @@ export interface UserLoginResponse {}
 
 // 用户信息
 export interface UserInfo {
+  /** 用户ID */
   id: number
+  /** 用户名 */
   username: string
+  /** 邮箱 */
   email: string
+  /** 头像 */
   avatar?: string
+  /** 手机号 */
   phone?: string
 }
 
 // 登录参数
 export interface UserLoginParams {
+  /** 用户名 */
   username: string
+  /** 密码 */
   password: string
 }
 
 // 登录响应
 export interface UserLoginResponse {
+  /** 令牌 */
   token: string
+  /** 用户信息 */
   userInfo: UserInfo
 }
 
 // 用户状态枚举
 export enum UserStatus {
+  /** 活跃 */
   Active = 'active',
+  /** 禁用 */
   Inactive = 'inactive',
+  /** 封禁 */
   Banned = 'banned',
 }
 ```
@@ -162,20 +174,29 @@ mkdir -p src/services/product
 ```typescript
 // src/services/product/types.ts
 export interface ProductInfo {
+  /** 产品ID */
   id: number
+  /** 产品名称 */
   name: string
+  /** 产品价格 */
   price: number
+  /** 产品描述 */
   description?: string
 }
 
 export interface ProductListParams {
+  /** 页码 */
   page?: number
+  /** 每页条数 */
   pageSize?: number
+  /** 分类 */
   category?: string
 }
 
 export interface ProductListResponse {
+  /** 产品列表 */
   list: ProductInfo[]
+  /** 总条数 */
   total: number
 }
 ```
@@ -190,6 +211,8 @@ import type { ProductInfo, ProductListParams, ProductListResponse } from './type
 export const ProductAPI = {
   /**
    * 获取产品列表
+   * @param params 查询参数
+   * @returns 产品列表
    */
   getList(params?: ProductListParams) {
     return http.get<ProductListResponse>('/products', { params })
@@ -197,6 +220,8 @@ export const ProductAPI = {
 
   /**
    * 获取产品详情
+   * @param id 产品ID
+   * @returns 产品详情
    */
   getDetail(id: number) {
     return http.get<ProductInfo>(`/products/${id}`)
@@ -204,6 +229,8 @@ export const ProductAPI = {
 
   /**
    * 创建产品
+   * @param data 创建产品数据
+   * @returns 创建产品
    */
   create(data: Omit<ProductInfo, 'id'>) {
     return http.post<ProductInfo>('/products', data)
@@ -218,7 +245,7 @@ export type { ProductInfo, ProductListParams, ProductListResponse } from './type
 ```typescript
 // src/services/index.ts
 export * from './user'
-export * from './product' // 新增
+export * from './product'
 ```
 
 ### 步骤 5: 在组件中使用
@@ -226,6 +253,9 @@ export * from './product' // 新增
 ```typescript
 import { ProductAPI, ProductInfo } from '@/services'
 
+/**
+ * 产品列表
+ */
 const ProductList = () => {
   const { data, loading } = useRequest(() => ProductAPI.getList())
 
@@ -279,17 +309,27 @@ import { UserAPI, UserInfo, ProductAPI, ProductInfo } from '@/services'
  * 通用类型定义
  */
 
-// 分页参数（多个模块使用）
+/**
+ * 分页参数（多个模块使用）
+ */
 export interface PaginationParams {
+  /** 页码 */
   page: number
+  /** 每页条数 */
   pageSize: number
 }
 
-// 分页响应（多个模块使用）
+/**
+ * 分页响应（多个模块使用）
+ */
 export interface PaginationResponse<T> {
+  /** 列表 */
   list: T[]
+  /** 总条数 */
   total: number
+  /** 页码 */
   page: number
+  /** 每页条数 */
   pageSize: number
 }
 ```
@@ -301,6 +341,7 @@ export interface PaginationResponse<T> {
 import type { PaginationParams } from '../types/common'
 
 export interface UserListParams extends PaginationParams {
+  /** 用户状态 */
   status?: UserStatus
 }
 ```

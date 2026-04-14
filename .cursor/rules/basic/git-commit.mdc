@@ -1,0 +1,21 @@
+---
+description: Git 提交规范与高风险操作边界
+alwaysApply: false
+---
+
+# Git 提交规范
+
+## 强制行为
+
+- 提交信息遵循 Conventional Commits
+- 推荐使用 `npm run commit`
+
+## 禁止行为
+
+- 禁止 `git commit --no-verify`（紧急场景需审批）
+- 禁止在共享分支 `git push --force`
+- 需要改写个人分支历史时仅使用 `git push --force-with-lease`
+
+## 参考
+
+- [GIT_COMMIT_GUIDE](mdc:docs/GIT_COMMIT_GUIDE.md)

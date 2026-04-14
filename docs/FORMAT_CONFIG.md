@@ -131,12 +131,18 @@ export const MyComponent = () => {
 ### 导入语句
 
 ```typescript
-// ✅ 推荐 - 按字母顺序排列
+// ✅ 推荐 - 按分组顺序导入
+// 1. React 相关
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+// 2. UI 组件
 import { Button } from '@/components/ui/button'
+// 3. 项目内部模块
 import { useUserStore } from '@/store'
+// 4. 类型导入
+import type { UserInfo } from '@/services'
 
-// ❌ 不推荐 - 无序排列
+// ❌ 不推荐 - 无分组、无顺序
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
 import { useUserStore } from '@/store'
@@ -150,10 +156,13 @@ import { useUserStore } from '@/store'
 
 ```json
 {
-  "semi": true, // 改为使用分号
-  "printWidth": 120 // 改为每行 120 字符
+  "semi": false,
+  "printWidth": 100
 }
 ```
+
+说明：本项目默认不建议随意调整 `.prettierrc` 核心规则；如确需调整，请同步更新
+`docs/REACT_GUIDE.md`、`docs/PROJECT_GUIDE.md` 和 `.cursor/rules` 中相关规范说明。
 
 ### 修改 ESLint 规则
 

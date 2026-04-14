@@ -480,13 +480,13 @@ const className = 'px-4 py-2 bg-primary text-white'
 #### 2.3 分号使用
 
 ```typescript
-// ✅ 推荐：不使用分号（配合 ESLint）
+// ✅ 项目规范：不使用分号（semi: false）
 const name = 'John'
 const age = 25
 
-// ✅ 也可以：使用分号（保持一致）
-const name = 'John'
-const age = 25
+// ❌ 错误：与项目规范冲突
+const name = 'John';
+const age = 25;
 ```
 
 #### 2.4 对象和数组
@@ -995,7 +995,7 @@ export default [
   "tabWidth": 2,
   "trailingComma": "es5",
   "printWidth": 100,
-  "arrowParens": "always"
+  "arrowParens": "avoid"
 }
 ```
 

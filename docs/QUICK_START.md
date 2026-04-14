@@ -1,5 +1,7 @@
 # 快速开始指南
 
+面向本 **PC 端 React 模板** 的本地开发与常见任务；路由与页面以 `src/pages/`、`src/router/routes.tsx` 为准，随业务迭代扩展你的业务模块即可。
+
 ## 🎯 5 分钟上手
 
 ### 步骤 1: 启动项目
@@ -12,7 +14,7 @@ npm install
 npm run dev
 ```
 
-访问: http://localhost:5173
+访问: http://localhost:5173（Hash 路由下首页多为 `http://localhost:5173/#/`）
 
 ### 步骤 2: 了解目录结构
 
@@ -145,7 +147,7 @@ export * from './product'
 
 ```typescript
 import { useEffect, useState } from 'react'
-import { ProductAPI, Product } from '@/services'
+import { ProductAPI, type Product } from '@/services'
 
 const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([])
@@ -371,7 +373,7 @@ A: 检查路由配置是否正确,路径是否匹配。
 
 ### Q: TypeScript 报错?
 
-A: 运行 `npm run type-check` 查看详细错误信息。
+A: 运行 `npm run build` 查看详细类型错误，或运行 `npm run check:types` 检查 Services 类型规范。
 
 ### Q: shadcn/ui 组件找不到?
 

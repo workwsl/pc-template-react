@@ -10,16 +10,16 @@
 
 ```
 src/pages/
-├── home/                    # 首页
+├── home/                    # 首页（模板已提供）
 │   ├── index.tsx           # 页面组件
 │   └── components/         # 页面私有组件
 ├── login/                   # 登录页
 │   ├── index.tsx
 │   └── components/
-├── user/                    # 用户中心
-│   ├── index.tsx
-│   └── components/
-└── productDetail/           # 产品详情（多单词用小驼峰）
+├── about/                   # 关于页（模板已提供）
+├── user/                    # 用户中心（模板已提供，示例需登录）
+├── notFound/                # 404（模板已提供）
+└── productDetail/           # 产品详情（示例：多单词用小驼峰）
     ├── index.tsx
     └── components/
 ```
@@ -27,7 +27,7 @@ src/pages/
 ### 命名规范
 
 - ✅ 使用小驼峰命名（camelCase）
-- ✅ 单个单词：`home`, `login`, `about`, `user`
+- ✅ 单个单词：`home`, `login`, `about`, `user`, `notFound`
 - ✅ 多个单词：`productDetail`, `orderList`, `userProfile`
 - ❌ 禁止使用 PascalCase：`Home`, `Login`, `ProductDetail`
 - ❌ 禁止使用 kebab-case：`product-detail`, `order-list`
@@ -37,9 +37,16 @@ src/pages/
 每个页面目录必须包含：
 
 - `index.tsx` - 页面组件（必需）
-- `components/` - 页面私有组件目录（必需，即使为空）
+- `components/` - 页面私有组件目录（按需创建，有页面私有模块时必须创建）
 
 **注意**：不再需要 `index.module.less` 文件，所有样式使用 Tailwind CSS 工具类。
+
+### 页面入口职责（新增约束）
+
+- `index.tsx` 是页面入口，职责是“编排页面模块”，不应把所有 UI 和业务逻辑都堆在一个文件中
+- 页面私有模块（只被当前页面使用）放在当前页面的 `components/` 目录
+- 多页面复用的模块提升到 `src/components/`（例如 `src/components/Common/`、`src/components/Business/`）
+- 当 `index.tsx` 出现大段渲染块或混合多类业务逻辑时，应主动拆分为独立组件/自定义 Hook
 
 ### 二级页面结构
 
@@ -349,6 +356,7 @@ const MyPage = () => {
 - **页面私有组件**：放在 `pages/xxx/components/` 下
 - **全局公共组件**：放在 `src/components/` 下
 - **业务组件**：如果多个页面使用，提升到 `src/components/`
+- **页面入口职责**：`index.tsx` 负责组合与编排，不承担全部 UI/逻辑实现
 
 ### 2. 样式组织
 
@@ -414,8 +422,8 @@ import styles from './index.module.less'  // ❌ 不使用
 
 // 错误 4: 缺少必需文件
 pages/myPage/
-├── index.tsx           # 只有组件文件
-└── (缺少 components/ 目录)
+├── index.tsx           # 把整个页面所有 UI/逻辑都写在这里
+└── (应按需拆分到 components/ 与 hooks/)
 ```
 
 ### ✅ 正确示例
@@ -441,7 +449,7 @@ pages/myPage/
 
 - [ ] 目录名使用小驼峰命名
 - [ ] 包含 `index.tsx` 文件
-- [ ] 创建 `components/` 目录
+- [ ] 页面私有模块已拆分到 `components/`（如有）
 - [ ] 使用 Tailwind CSS 工具类，不创建 CSS 文件
 - [ ] 使用 shadcn/ui 组件
 - [ ] 在路由配置中添加路由
@@ -458,6 +466,7 @@ pages/myPage/
 
 - [快速开始指南](./QUICK_START.md)
 - [项目结构指南](./PROJECT_GUIDE.md)
-- [样式规范详细说明](../.cursor/rules/style-guidelines.mdc)
+- [样式规范详细说明](../.cursor/rules/basic/style.mdc)
+- [页面规则说明](../.cursor/rules/modules/pages.mdc)
 - [Tailwind CSS 官方文档](https://tailwindcss.com/docs)
 - [shadcn/ui 官方文档](https://ui.shadcn.com/)

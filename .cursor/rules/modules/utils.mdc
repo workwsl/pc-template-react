@@ -1,0 +1,20 @@
+---
+description: 工具函数纯度、导出与错误边界
+alwaysApply: false
+---
+
+# Utils 规范
+
+## 强制行为
+
+- 工具函数优先纯函数设计
+- 公共工具通过 `src/utils/index.ts` 统一导出
+
+## 禁止行为
+
+- 禁止在 utils 中混入业务 API 封装
+- 禁止吞错
+
+## 参考
+
+- [PROJECT_GUIDE](mdc:docs/PROJECT_GUIDE.md)

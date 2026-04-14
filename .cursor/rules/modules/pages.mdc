@@ -1,0 +1,27 @@
+---
+description: 页面目录、入口编排与路由协同
+alwaysApply: false
+---
+
+# 页面规范
+
+## 强制行为
+
+- 页面目录 `src/pages/<page>/index.tsx` 保持编排职责
+- 页面新增后同步注册路由并补齐必要 meta
+- 弹层存在裁剪风险时通过 Portal 挂载到 `document.body`
+- 页面私有组件放在 `src/pages/<page>/components`，跨页面复用组件提升到 `src/components`
+- 页面存在私有 `components/` 时，`index.tsx` 应承担页面编排职责，而不是仅做无意义转发
+- 页面注释遵循 `basic/comment.mdc`；仅在页面职责、数据流、关键交互约束或模块拆分原因不直观时补充说明
+
+## 禁止行为
+
+- 禁止页面入口仅做薄引用
+- 禁止把页面编排、复杂交互与多个私有子模块长期堆在单文件
+- 禁止页面常规使用 `index.module.less`
+- 禁止页面私有组件违反 `modules/components.mdc` 中的行数拆分阈值与拆分要求
+- 禁止为页面区块布局、普通 JSX 层级或直白的 UI 文案逐段补充解释性注释
+
+## 参考
+
+- [PAGE_GUIDE](mdc:docs/PAGE_GUIDE.md)

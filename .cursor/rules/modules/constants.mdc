@@ -1,0 +1,15 @@
+---
+description: 常量管理与魔法值约束
+alwaysApply: false
+---
+
+# 常量规范
+
+## 强制行为
+
+- 共享常量放 `src/constants`
+- 常量命名使用 UPPER_SNAKE_CASE
+
+## 禁止行为
+
+- 禁止在业务逻辑中散落魔法值

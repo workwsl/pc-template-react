@@ -253,16 +253,23 @@ git commit -m "feat: 添加用户登录功能。"
 git commit -m "feat: 添加用户登录功能"
 ```
 
-### 3. 如何跳过 Hooks（不推荐）
+### 3. 如何跳过 Hooks（受控使用）
 
-**紧急情况下可以跳过 Hooks：**
+默认禁止使用 `--no-verify`。仅在以下场景可临时使用：
+
+- CI/发布阻断且需要先恢复线上服务
+- 已有负责人明确审批，并在同一工作日补齐检查
 
 ```bash
-# 跳过 pre-commit 和 commit-msg
-git commit --no-verify -m "feat: 紧急修复"
+# 临时跳过（需要审批记录）
+git commit --no-verify -m "fix: 紧急恢复线上可用性"
 ```
 
-⚠️ **注意：** 仅在紧急情况下使用，会跳过代码检查和消息验证。
+补救要求（必须全部执行）：
+
+1. 立即执行 `npm run lint && npm run build`
+2. 发现问题先修复，再补一个正常 commit
+3. 在 PR/提交说明中记录“为何跳过、何时补救、谁审批”
 
 ### 4. TypeScript 类型检查失败
 
@@ -287,9 +294,14 @@ git commit -m "fix: 修复类型错误"
 # 修改最后一次提交的消息
 git commit --amend -m "feat: 正确的提交消息"
 
-# 如果已经 push，需要强制推送（谨慎使用）
-git push --force
+# 如果已经 push，优先新增 commit 纠正，不要改写公共历史
 ```
+
+`git push --force` 风险极高，默认禁止在共享分支使用。若必须使用，请满足：
+
+- 仅限个人分支，且经过团队明确同意
+- 使用 `git push --force-with-lease` 替代 `git push --force`
+- 提前在协作渠道通知影响范围
 
 ## 📚 示例
 
@@ -427,7 +439,7 @@ npm run changelog
 3. **使用 Commitizen**：避免手写错误，提高效率
 4. **详细描述**：复杂的改动要在 body 中详细说明
 5. **关联 Issue**：在 footer 中关联相关的 Issue
-6. **代码审查**：提交前自己先审查一遍代码git
+6. **代码审查**：提交前自己先审查一遍代码
 7. **测试通过**：确保代码能正常运行再提交
 8. **定期发版**：使用 `npm run changelog` 生成版本和更新日志
 

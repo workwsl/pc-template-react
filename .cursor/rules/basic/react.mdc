@@ -1,0 +1,23 @@
+---
+description: React 组件、Hooks 与渲染约束
+alwaysApply: false
+---
+
+# React 规范
+
+## 强制行为
+
+- Hooks 仅在组件或自定义 Hook 顶层调用
+- `useEffect` 依赖保持完整
+- 列表渲染使用稳定 key
+- 组件上下文内路由跳转使用 `useNavigate()`
+
+## 禁止行为
+
+- 禁止在条件、循环、嵌套函数中调用 Hooks
+- 禁止以忽略依赖方式规避副作用问题
+- 禁止在组件内直接使用全局 `navigate()` 替代 `useNavigate()`
+
+## 参考
+
+- [REACT_GUIDE](mdc:docs/REACT_GUIDE.md)

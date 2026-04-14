@@ -1,5 +1,11 @@
 # 项目文档索引
 
+本目录包含 **PC 端 React 模板工程**的开发规范与教程文档。具体业务域由你在 Fork 后的产品中定义；技术上统一遵循本仓库 `docs/` 与 `.cursor/rules/` 的约定。
+
+- **环境**：Node.js **>= 20**；本地开发默认 `http://localhost:5173`。
+- **路由**：模板使用 **Hash 模式**（`HashRouter`），地址栏会出现 `#/` 前缀，属正常行为。
+- **协作入口**：仓库根目录 [AGENTS.md](../AGENTS.md) 汇总技术栈、规则索引与 Skill 位置。
+
 本目录包含项目的所有开发规范文档。
 
 ## 📚 核心文档
@@ -125,6 +131,19 @@ npm run changelog
 
 ## 📝 文档维护
 
+### 单一真源与边界
+
+- `.cursor/rules/` 是硬约束真源（必须遵守）
+- `docs/` 是解释性真源（示例、教程、背景说明）
+- 当两者冲突时，以 `.cursor/rules/` 为准，并立即修正文档
+- 任务执行前先按 `.cursor/rules/README.md` 的“执行总纲”选择并阅读对应规则
+
+### 规则入口
+
+- **[.cursor/rules/ai.mdc](../.cursor/rules/ai.mdc)** - 规则总纲（分层、流程、边界）
+- **[.cursor/rules/basic/basic.mdc](../.cursor/rules/basic/basic.mdc)** - 基础规则索引
+- **[.cursor/rules/README.md](../.cursor/rules/README.md)** - 规则导航与场景调用建议
+
 ### 文档结构
 
 ```
@@ -147,6 +166,7 @@ docs/
 - 更新文档时请同步更新本索引文件
 - 保持文档的简洁性和可读性
 - 避免重复内容
+- 修改 `.prettierrc`、`eslint.config.js`、`package.json scripts` 后，必须同步更新相关文档与规则
 
 ## 🌟 文档特点
 

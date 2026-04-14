@@ -1,0 +1,17 @@
+---
+description: 路由注册、meta 与守卫协同
+alwaysApply: false
+---
+
+# 路由规范
+
+## 强制行为
+
+- 路由统一在 `src/router/routes.tsx` 维护
+- 页面路由按需提供 `meta`（如标题、鉴权语义）
+- 组件内导航优先 `useNavigate`；**非 React 上下文**（如请求拦截器、纯工具模块）使用 `@/router/navigate` 的 `navigate`（须在应用挂载、`setNavigate` 已执行之后）
+
+## 禁止行为
+
+- 禁止在页面中重复实现全局守卫逻辑
+- 禁止新增页面漏配路由

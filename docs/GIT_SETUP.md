@@ -217,14 +217,20 @@ npm run build
 - 使用 `npm run commit` 交互式提交
 - 参考 [GIT_COMMIT_GUIDE.md](./GIT_COMMIT_GUIDE.md) 了解正确格式
 
-### 问题 4: 需要跳过 hooks（紧急情况）
+### 问题 4: 需要跳过 hooks（受控紧急场景）
 
 **解决**:
 
 ```bash
-# 跳过所有 hooks（不推荐）
-git commit --no-verify -m "feat: 紧急修复"
+# 跳过所有 hooks（需要审批记录）
+git commit --no-verify -m "fix: 紧急恢复线上可用性"
 ```
+
+注意：
+
+- 默认禁止使用 `--no-verify`
+- 使用后必须立即补跑 `npm run lint && npm run build`
+- 需要在 PR 或提交说明中记录原因与补救动作
 
 ## 🔗 相关资源
 
