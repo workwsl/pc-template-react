@@ -33,8 +33,13 @@
 
 ## 其他分支与多分支开发（Git Worktree）
 
-- **main**：React 19 + TypeScript + Vite + shadcn/ui + Tailwind（无 Ant Design）
-- **react18antd5**：React 18 + Ant Design 5 + Less
+**说明**：下列第一列为 **Git 分支名**；本地目录名可自定义。目录 `pc-template-react-react19-antd6` 对应分支 **`react19-antd6`**（本模板检出时常用该目录名，勿与分支名混淆）。
+
+| Git 分支                    | 技术栈概要                                              |
+| --------------------------- | ------------------------------------------------------- |
+| **main**                    | React 19 + shadcn/ui + Tailwind CSS v3（无 Ant Design） |
+| **react19-antd6**（本分支） | React 19 + Ant Design 6 + TailwindCSS v4 + Less（补充） |
+| **react18antd5**            | React 18 + Ant Design 5 + Less                          |
 
 本分支与上述分支的 `.cursor/rules`、`.cursor/skills`、`AGENTS.md` **各自维护**，初版曾参考 `main` 的目录结构，后续演进互不强制对齐。
 
@@ -43,6 +48,7 @@
 ```bash
 git fetch origin
 git worktree add ../pc-template-react-main origin/main
+git worktree add ../pc-template-react-react19-antd6 origin/react19-antd6
 git worktree add ../pc-template-react-react18antd5 origin/react18antd5
 ```
 
@@ -54,7 +60,7 @@ git worktree add ../pc-template-react-react18antd5 origin/react18antd5
 - antd 组件样式通过 layer 策略降权，保证 Tailwind 更易覆盖
 - `*.module.less` 仅用于 Tailwind 难以表达的复杂结构或存量改造
 - 相关实现位于：
-  - `src/styles/tailwind.css`
+  - `src/styles/global.css`（Tailwind 与全局样式入口）
   - `src/main.tsx`
   - `postcss.config.js`
 
@@ -98,6 +104,9 @@ npm run format
 
 # Prettier 检查
 npm run format:check
+
+# API 相关类型检测（见 scripts/check-api-types.js）
+npm run check:types
 ```
 
 ### Git 提交
@@ -188,27 +197,31 @@ const handleLogin = async () => {
 项目使用 [ahooks](https://ahooks.js.org/) 提供 70+ 个高质量 React Hooks。
 
 ```typescript
-import { useRequest, useDebounce, useLocalStorageState } from '@/hooks'
+import { useEffect, useState } from 'react'
+import { useRequest, useDebounce } from '@/hooks'
 import { UserAPI } from '@/services'
 
 function UserPage() {
-  // 请求管理
-  const { data, loading, run } = useRequest(UserAPI.getUserInfo)
-
-  // 防抖
-  const debouncedValue = useDebounce(searchText, { wait: 500 })
-
-  // 持久化状态
-  const [theme, setTheme] = useLocalStorageState('theme', {
-    defaultValue: 'light',
-  })
+  const [searchText, setSearchText] = useState('')
+  const debouncedKeyword = useDebounce(searchText, { wait: 500 })
+  const { data, loading, run } = useRequest(UserAPI.getUserInfo, { manual: true })
 
   useEffect(() => {
     run()
-  }, [])
+  }, [run])
 
-  if (loading) return <Loading />
-  return <div>{data?.username}</div>
+  if (loading) return <div>加载中…</div>
+  return (
+    <div>
+      <input
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        placeholder="搜索"
+      />
+      <p>防抖后：{debouncedKeyword}</p>
+      <div>{data?.username}</div>
+    </div>
+  )
 }
 ```
 
@@ -275,10 +288,9 @@ function MyPage() {
 
 ```typescript
 // 1. 第三方库
-import React from 'react'
-import { Button } from 'antd-mobile'
+import { Button } from 'antd'
 
-// 2. 项目内部模块(使用别名)
+// 2. 项目内部模块（别名）
 import { useRequest } from '@/hooks'
 import { UserAPI } from '@/services'
 
@@ -307,7 +319,7 @@ export default defineConfig({
 
 ### 如何自定义主题?
 
-修改 `src/styles/variables.less` 中的变量值。
+优先通过 `src/App.tsx` 的 `ConfigProvider` 传入 `theme`/`token`；全局与 Tailwind 相关样式见 `src/styles/global.css`，页面级补充可用 `*.module.less`（详见上文「样式策略」）。
 
 ## 📄 文档
 
@@ -316,6 +328,7 @@ export default defineConfig({
 - **[文档索引](./docs/README.md)** - 所有文档的导航入口
 - **[快速开始](./docs/QUICK_START.md)** - 5 分钟快速上手指南
 - **[项目结构](./docs/PROJECT_GUIDE.md)** - 完整的项目结构说明
+- **[AI 与协作约定](./AGENTS.md)** - Cursor / Agent 规则索引与工程约定入口
 
 ### 📖 开发规范
 
@@ -330,6 +343,7 @@ export default defineConfig({
 - **开发新功能**: 快速开始 → React 规范 → API 规范 → 页面规范
 - **了解项目**: 项目结构 → 快速开始
 - **规范代码**: React 规范 → API 规范 → 页面规范
+- **AI / Cursor 协作**: [AGENTS.md](./AGENTS.md) → `.cursor/rules/` → `docs/`
 
 ## 🤝 贡献指南
 

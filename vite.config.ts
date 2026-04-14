@@ -3,20 +3,23 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vite.dev/config/
-export default defineConfig({
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
-  },
-  plugins: [
-    react({
-      babel: {
-        plugins: [
-          ['@babel/plugin-proposal-decorators', { legacy: true }],
-          ['@babel/plugin-proposal-class-properties'],
-        ],
+export default defineConfig(({ mode }) => {
+  return {
+    base: mode === 'production' ? '/pc-template-react/' : '/',
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
       },
-    }),
-  ],
+    },
+    plugins: [
+      react({
+        babel: {
+          plugins: [
+            ['@babel/plugin-proposal-decorators', { legacy: true }],
+            ['@babel/plugin-proposal-class-properties'],
+          ],
+        },
+      }),
+    ],
+  }
 })
