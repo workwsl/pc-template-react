@@ -1,0 +1,21 @@
+---
+description: 样式规范（Ant Design 5 + Less）
+alwaysApply: false
+---
+
+# 样式规范
+
+## 强制行为
+
+- 组件与页面样式以 **Less** 为主：`*.module.less`、全局入口 `src/styles/index.less`，与 Ant Design 5 主题/变量用法保持一致
+- 布局与间距优先使用 antd 组件与合理 className；避免无必要的内联 style 堆砌
+
+## 禁止行为
+
+- 禁止引入与本栈冲突的另一套完整 UI 组件库（除非经评审的迁移方案）
+- 禁止在常规业务页面用大量非模块化的全局 CSS 覆盖 antd 而无文档说明
+
+## 参考
+
+- [PAGE_GUIDE](mdc:docs/PAGE_GUIDE.md)
+- 仓库 `README.md`

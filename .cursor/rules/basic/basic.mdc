@@ -1,0 +1,18 @@
+---
+description: 基础规范索引：basic/ 子规则速查
+alwaysApply: false
+---
+
+# 基础规范索引
+
+| 文件 | 适用场景 |
+| ---- | ---- |
+| [project-overview.mdc](mdc:.cursor/rules/basic/project-overview.mdc) | 技术栈、目录分层、最佳实践（建议首读） |
+| [code-quality.mdc](mdc:.cursor/rules/basic/code-quality.mdc) | 质量强制项、错误处理、安全与边界 |
+| [ts.mdc](mdc:.cursor/rules/basic/ts.mdc) | TypeScript 类型规范 |
+| [react.mdc](mdc:.cursor/rules/basic/react.mdc) | React 组件、Hooks 与渲染约束 |
+| [style.mdc](mdc:.cursor/rules/basic/style.mdc) | Tailwind 与样式约束 |
+| [comment.mdc](mdc:.cursor/rules/basic/comment.mdc) | 注释边界与注释风格 |
+| [code-names.mdc](mdc:.cursor/rules/basic/code-names.mdc) | 命名、导入顺序与结构规范 |
+| [lint.mdc](mdc:.cursor/rules/basic/lint.mdc) | lint/format 与提交前检查 |
+| [git-commit.mdc](mdc:.cursor/rules/basic/git-commit.mdc) | Git 提交规范与高风险操作边界 |

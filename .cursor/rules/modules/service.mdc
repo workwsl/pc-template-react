@@ -1,0 +1,40 @@
+---
+description: Service 层约束（统一请求入口与类型）
+alwaysApply: false
+---
+
+# Service 规范
+
+## 第一优先级规则
+
+- `src/services` 中的接口定义、请求参数与响应类型必须优先对齐 `openapi.json` / 后端契约；service 先表达接口真实语义，再考虑上层消费便利性
+- `service` 层职责是请求封装、参数透传、响应类型声明与必要的接口边界处理，不承担前端 ViewModel 加工职责
+- 前端展示或交互专用的组合字段、派生字段、格式转换，应放在更靠近消费方的逻辑层，如页面私有逻辑、hooks 或明确的 mapper/adapter 中
+
+## 强制行为
+
+- 业务 API 封装放 `src/services`
+- 请求统一走 `@/utils/request` 的 `http`
+- 参数与响应类型显式声明
+- 接口 path、请求体、查询参数、响应类型命名与字段语义优先对齐 `openapi.json` / 后端契约；若契约缺失，以实际接口返回为准补齐
+- Service 层方法默认返回 `Promise<ApiResponse<T>>`，与 `http` 方法签名一致
+- Service 层不提前解包 `response.data`；由调用方按需读取业务负载
+- 模块结构保持 `src/services/<module>/{index.ts,types.ts}`
+- 模块在 `src/services/index.ts` 聚合导出
+- **目录命名与契约对齐**：`src/services/<module>/` 的 `<module>` 应与 OpenAPI `tags`、路径前缀或团队约定的资源名一致（如 `user`、`order`）；kebab-case 的 path segment 映射为 camelCase 目录时全仓统一即可
+- 若历史 `services` 目录与当前契约路径/tag 不一致，必须以契约为准迁移并删除旧目录/旧导出，不得并存保留
+- 禁止用前端兜底值伪造后端未返回的业务字段；缺失字段应保留真实语义（如 `undefined` / `null` / 原始字段）
+
+## 禁止行为
+
+- 禁止在页面、组件、store 内直接实现业务 API 细节
+- 禁止重复创建 axios 实例
+- 禁止在 Service 层将 `ApiResponse<T>` 偷换为裸 `T` 返回（除非规则/需求显式说明）
+- 禁止在 `service` 中为迎合前端使用习惯而偏离 `openapi.json` / 后端契约定义字段、类型或结构
+- 禁止为了兼容页面而在 `service` 层拼装前端专用 ViewModel；应保留后端契约并把必要转换下沉到更靠近页面的逻辑层
+- 禁止将本应位于业务层或使用方的字段转换、组合字段拼装、展示格式化逻辑塞进 `service`
+- 禁止创建与契约路径或 tag 明显不对应的临时 service 目录名
+
+## 参考
+
+- [API_GUIDE](mdc:docs/API_GUIDE.md)

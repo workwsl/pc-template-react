@@ -1,0 +1,23 @@
+---
+description: lint/format 与交付前检查
+alwaysApply: false
+---
+
+# Lint 与格式化
+
+## 强制行为
+
+- 按任务相关度执行校验：
+- 仅文档或规则说明改动，可不跑构建类命令，但需说明原因
+- 涉及 TS/TSX 代码改动，至少运行 `npm run lint` 或 `npm run check:types` 中与改动最相关的校验
+- 涉及构建配置、路由装配、service/store 等基础设施改动时，优先补充 `npm run build`
+- 格式化遵循 `.prettierrc` 与 `eslint.config.js`
+
+## 禁止行为
+
+- 禁止手动格式化与配置冲突
+- 禁止跳过可执行的基础校验直接交付
+
+## 参考
+
+- [代码格式化配置](mdc:docs/FORMAT_CONFIG.md)

@@ -29,6 +29,23 @@
 - Axios - HTTP 请求
 - Less - CSS 预处理
 
+## 其他分支与多分支开发（Git Worktree）
+
+- **main**：React 19 + TypeScript + Vite + shadcn/ui + Tailwind（无 Ant Design）
+- **react19-antd6**：React 19 + Ant Design 6 + TailwindCSS v4 + Less（补充）
+
+本分支与上述分支的 `.cursor/rules`、`.cursor/skills`、`AGENTS.md` **各自维护**，初版曾参考 `main` 的目录结构，后续演进互不强制对齐。
+
+并行检出多个分支时，可在仓库**父目录**执行（路径可按需调整）：
+
+```bash
+git fetch origin
+git worktree add ../pc-template-react-main origin/main
+git worktree add ../pc-template-react-react19-antd6 origin/react19-antd6
+```
+
+使用 `git worktree list` 查看已绑定的目录。
+
 ## 🚀 快速开始
 
 ### 安装依赖
