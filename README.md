@@ -1,6 +1,6 @@
 # PC Template React
 
-基于 React 19 + TypeScript + Vite + shadcn/ui + Tailwind CSS 的 PC 端项目模板。
+适用于快速搭建 **中后台 / 桌面优先** 类产品的 **PC 端 Web 模板**，基于 React 19 + TypeScript + Vite + shadcn/ui + Tailwind CSS。路由为 React Router 7（`HashRouter`），接口请求统一走 `@/utils/request`（Axios）。
 
 ## ✨ 特性
 
@@ -8,7 +8,7 @@
 - ⚛️ **React 19** - 最新的 React 特性
 - 🎨 **shadcn/ui + Tailwind CSS** - 现代化的 UI 组件库和实用优先的 CSS 框架
 - 📦 **TypeScript** - 类型安全
-- 🛣️ **React Router** - 路由管理
+- 🛣️ **React Router 7** - 路由管理（`HashRouter`）
 - 🗃️ **Zustand** - 轻量级状态管理
 - 🔄 **Axios** - HTTP 请求封装
 - 🎯 **ESLint + Prettier** - 代码规范和格式化
@@ -29,12 +29,28 @@
 - React Hook Form + Zod - 表单处理和验证
 - Sonner - Toast 通知
 
-## 其他分支
+## 其他分支与多分支开发（Git Worktree）
 
-- 如果需要查看 React 19 + Ant Design 6 的版本，请切换到 `react19-antd6` 分支
-- 如果需要查看 React 18 + antd-mobile 5 的版本，请切换到 `react18antd5` 分支
+- **react19-antd6**：React 19 + Ant Design 6 + TailwindCSS v4 + Less（补充）
+- **react18antd5**：React 18 + Ant Design 5 + Less（PC 端模板，非 antd-mobile）
+
+各变体分支的 `.cursor/rules`、`.cursor/skills`、`AGENTS.md` **各自维护**；本仓库 `main` 为 **shadcn/ui** 线，其他分支可借鉴本线目录结构做初版，后续互不强制对齐。
+
+并行检出示例（在仓库**父目录**执行，路径可按需调整）：
+
+```bash
+git fetch origin
+git worktree add ../pc-template-react-react19-antd6 origin/react19-antd6
+git worktree add ../pc-template-react-react18antd5 origin/react18antd5
+```
+
+使用 `git worktree list` 查看已绑定的目录。
 
 ## 🚀 快速开始
+
+### 环境要求
+
+- **Node.js >= 20**（见 `package.json` 的 `engines`）
 
 ### 安装依赖
 
@@ -74,6 +90,9 @@ npm run format
 
 # Prettier 检查
 npm run format:check
+
+# API 相关类型检测（见 scripts/check-api-types.js）
+npm run check:types
 ```
 
 ### Git 提交
@@ -92,25 +111,25 @@ npm run changelog
 
 ```
 src/
-├── services/               # API 接口管理
+├── services/               # API 接口（按模块拆分，经 http 封装）
 ├── assets/                 # 静态资源
-├── components/             # 公共组件
+├── components/             # 公共组件（含 ui/ shadcn 组件）
 ├── constants/              # 常量定义
-├── hooks/                  # 自定义 Hooks (基于 ahooks)
-├── layouts/                # 布局组件
-├── pages/                  # 页面组件 (小驼峰命名)
-│   ├── home/              # 首页
-│   ├── login/             # 登录页
-│   ├── about/             # 关于页
-│   ├── user/              # 用户页
-│   └── notFound/          # 404页
-├── router/                 # 路由配置
-├── store/                  # 状态管理 (Zustand)
-├── styles/                 # 全局样式
+├── hooks/                  # 自定义 Hooks（基于 ahooks）
+├── lib/                    # 工具库（如 toast、cn）
+├── pages/                  # 页面（目录小驼峰）
+│   ├── home/
+│   ├── login/
+│   ├── about/
+│   ├── user/
+│   └── notFound/
+├── router/                 # 路由表、守卫、非组件内 navigate
+├── store/                  # Zustand 状态
+├── styles/                 # 全局样式（Tailwind 入口）
 ├── types/                  # 类型定义
-├── utils/                  # 工具函数
-├── App.tsx                 # 根组件
-└── main.tsx                # 应用入口
+├── utils/                  # 工具函数与 request 封装
+├── App.tsx
+└── main.tsx
 ```
 
 ## 🔧 配置说明
@@ -125,7 +144,7 @@ src/
 
 ### 路径别名
 
-已配置 `@` 别名指向 `src` 目录:
+已配置 `@/` 别名指向 `src/`：
 
 ```typescript
 import { UserAPI } from '@/services'
@@ -136,8 +155,8 @@ import { useRequest } from '@/hooks'
 
 ### 创建新页面
 
-1. 在 `src/pages/` 下创建页面目录（使用小驼峰命名，如 `productDetail/`）
-2. 创建必需文件：`index.tsx`、`index.module.less`、`components/` 目录
+1. 在 `src/pages/` 下创建页面目录（小驼峰，如 `productDetail/`）
+2. 必备 `index.tsx`；页面私有模块放在同目录 `components/`；样式使用 **Tailwind**，不再使用页面级 `*.module.less`
 3. 在 `src/router/routes.tsx` 中配置路由
 
 详细规范请查看 [页面开发规范](./docs/PAGE_GUIDE.md)
@@ -146,15 +165,14 @@ import { useRequest } from '@/hooks'
 
 ```typescript
 import { UserAPI } from '@/services'
-import { message } from 'antd'
+import { toast } from '@/lib/toast'
 
-// 在组件中使用
 const handleLogin = async () => {
   try {
-    const res = await UserAPI.login({ username, password })
-    message.success('登录成功')
-  } catch (error) {
-    message.error('登录失败')
+    await UserAPI.login({ username, password })
+    toast.success('登录成功')
+  } catch {
+    toast.error('登录失败')
   }
 }
 ```
@@ -164,27 +182,26 @@ const handleLogin = async () => {
 项目使用 [ahooks](https://ahooks.js.org/) 提供 70+ 个高质量 React Hooks。
 
 ```typescript
-import { useRequest, useDebounce, useLocalStorageState } from '@/hooks'
+import { useState } from 'react'
+import { useRequest, useDebounce } from '@/hooks'
 import { UserAPI } from '@/services'
 
 function UserPage() {
-  // 请求管理
-  const { data, loading, run } = useRequest(UserAPI.getUserInfo)
+  const [searchText, setSearchText] = useState('')
+  const debouncedKeyword = useDebounce(searchText, { wait: 500 })
+  const { data, loading } = useRequest(UserAPI.getUserInfo)
 
-  // 防抖
-  const debouncedValue = useDebounce(searchText, { wait: 500 })
-
-  // 持久化状态
-  const [theme, setTheme] = useLocalStorageState('theme', {
-    defaultValue: 'light',
-  })
-
-  useEffect(() => {
-    run()
-  }, [])
-
-  if (loading) return <Loading />
-  return <div>{data?.username}</div>
+  return (
+    <div>
+      <input
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        placeholder="搜索"
+      />
+      <p>防抖后：{debouncedKeyword}</p>
+      {loading ? <div>加载中…</div> : <div>{data?.username}</div>}
+    </div>
+  )
 }
 ```
 
@@ -251,15 +268,15 @@ function MyPage() {
 
 ```typescript
 // 1. 第三方库
-import React from 'react'
-import { Button } from 'antd-mobile'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 
-// 2. 项目内部模块(使用别名)
+// 2. 项目内部模块（别名）
 import { useRequest } from '@/hooks'
 import { UserAPI } from '@/services'
 
-// 3. 相对路径导入
-import styles from './index.module.less'
+// 3. 相对路径
+import { Foo } from './components/Foo'
 ```
 
 ## 📝 常见问题
@@ -281,9 +298,9 @@ export default defineConfig({
 })
 ```
 
-### 如何自定义主题?
+### 如何自定义主题？
 
-修改 `src/styles/variables.less` 中的变量值。
+修改 Tailwind 与设计令牌：优先调整 `src/styles/index.css`（CSS 变量）与根目录 `tailwind.config.js`，详见 [Tailwind 文档](https://tailwindcss.com/docs/configuration)。
 
 ## 📄 文档
 
@@ -292,6 +309,7 @@ export default defineConfig({
 - **[文档索引](./docs/README.md)** - 所有文档的导航入口
 - **[快速开始](./docs/QUICK_START.md)** - 5 分钟快速上手指南
 - **[项目结构](./docs/PROJECT_GUIDE.md)** - 完整的项目结构说明
+- **[AI 与协作约定](./AGENTS.md)** - Cursor / Agent 规则索引与工程约定入口
 
 ### 📖 开发规范
 
@@ -306,6 +324,7 @@ export default defineConfig({
 - **开发新功能**: 快速开始 → React 规范 → API 规范 → 页面规范
 - **了解项目**: 项目结构 → 快速开始
 - **规范代码**: React 规范 → API 规范 → 页面规范
+- **AI / Cursor 协作**: [AGENTS.md](./AGENTS.md) → `.cursor/rules/` → `docs/`
 
 ## 🤝 贡献指南
 
