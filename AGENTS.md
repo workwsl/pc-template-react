@@ -4,7 +4,7 @@
 
 **仓库角色**：本仓库为 **PC 端 Web 模板**（React 19 + Ant Design 6），用于快速搭建中后台或桌面优先类产品。
 
-**分支说明**：本分支为 `react19-antd6`。其他变体见仓库 `README.md`「其他分支 /多分支开发」；各分支的 `AGENTS.md` 与 `.cursor/rules` **独立维护**，不强制与其他分支保持一致。
+**分支说明**：本分支为 `react19-antd6`。其他变体见仓库 `README.md`「其他分支与多分支开发」；各分支的 `AGENTS.md` 与 `.cursor/rules` **独立维护**，不强制与其他分支保持一致。本地 worktree 目录名可自定义（常见为 `pc-template-react-react19-antd6`），与 Git 分支名不必相同。
 
 ## 工程概览
 
