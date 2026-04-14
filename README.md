@@ -31,8 +31,13 @@
 
 ## 其他分支与多分支开发（Git Worktree）
 
-- **react19-antd6**：React 19 + Ant Design 6 + TailwindCSS v4 + Less（补充）
-- **react18antd5**：React 18 + Ant Design 5 + Less（PC 端模板，非 antd-mobile）
+**说明**：下列第一列为 **Git 分支名**；`git worktree add <路径>` 中的本地目录名可自定义。常见约定目录 `pc-template-react-react19-antd6` 对应分支 **`react19-antd6`**（目录名 ≠ 分支名，勿混淆）。
+
+| Git 分支 | 技术栈概要 |
+| --- | --- |
+| **main**（本分支） | React 19 + shadcn/ui + Tailwind CSS v3 |
+| **react19-antd6** | React 19 + Ant Design 6 + TailwindCSS v4 + Less（补充） |
+| **react18antd5** | React 18 + Ant Design 5 + Less（PC 端，非 antd-mobile） |
 
 各变体分支的 `.cursor/rules`、`.cursor/skills`、`AGENTS.md` **各自维护**；本仓库 `main` 为 **shadcn/ui** 线，其他分支可借鉴本线目录结构做初版，后续互不强制对齐。
 
@@ -40,6 +45,8 @@
 
 ```bash
 git fetch origin
+# 可选：再检出一份 main 到并列目录，便于对照
+git worktree add ../pc-template-react-main origin/main
 git worktree add ../pc-template-react-react19-antd6 origin/react19-antd6
 git worktree add ../pc-template-react-react18antd5 origin/react18antd5
 ```

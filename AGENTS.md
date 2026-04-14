@@ -4,7 +4,7 @@
 
 **仓库角色**：本仓库为 **PC 端 Web 模板**，用于快速搭建中后台或桌面优先类产品。
 
-**分支说明**：本文件以 **`main`（shadcn/ui 线）** 为准。`react19-antd6`、`react18antd5` 等变体分支各自维护各自的 `AGENTS.md` 与 `.cursor/rules`，不强制与本分支对齐。
+**分支说明**：本文件以 **`main`（shadcn/ui 线）** 为准。`react19-antd6`、`react18antd5` 等变体分支各自维护各自的 `AGENTS.md` 与 `.cursor/rules`，不强制与本分支对齐。若在 **`react19-antd6`** 等分支的 worktree 中工作（例如目录名为 `pc-template-react-react19-antd6`），请打开该检出目录内的 `AGENTS.md` 与 `.cursor/rules`，勿以本文件为栈与样式真源。
 
 ## 工程概览
 
