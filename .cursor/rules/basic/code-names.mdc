@@ -1,0 +1,21 @@
+---
+description: 命名、导入顺序与目录约束
+alwaysApply: false
+---
+
+# 命名与导入
+
+## 强制行为
+
+- 页面目录使用 camelCase，组件名使用 PascalCase
+- 常量使用 UPPER_SNAKE_CASE
+- 导入顺序遵循：React/Router -> UI -> 第三方 -> `@/` -> `import type` -> 相对路径
+
+## 禁止行为
+
+- 禁止混用不符合项目约定的命名风格
+- 禁止打乱导入顺序
+
+## 参考
+
+- [REACT_GUIDE](mdc:docs/REACT_GUIDE.md)

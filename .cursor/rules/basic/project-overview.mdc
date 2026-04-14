@@ -1,0 +1,30 @@
+---
+description: 项目概览、技术栈、目录分层与开发最佳实践（React 等价）
+alwaysApply: true
+---
+
+# 项目概览与最佳实践
+
+## 基础规范
+
+- 工程定位：**PC 端 Web 模板**（React + TS + Ant Design），业务域由具体产品自行定义
+- 项目栈：React 19 + TypeScript + Vite 7 + React Router 7（`HashRouter`，见 `src/main.tsx`）+ **Ant Design 6** + **TailwindCSS v4**（优先 utility）+ Less（补充）+ Zustand + ahooks；全局样式入口见 `src/styles/global.css`、`src/App.module.less`
+- UI：`App.tsx` 使用 `StyleProvider layer` + `ConfigProvider`，antd 与 Tailwind 分层共存（细则见 `basic/style.mdc`）
+- 运行要求：Node **>= 20**（`package.json` `engines`）
+- 路径别名：`@/` 指向 `src/`
+- 页面目录：`src/pages/{pageName}/index.tsx`
+- 跨页面复用 Hook 目录：`src/hooks/{useXxx}.ts(x)`
+- 服务目录：`src/services/<module>/{index.ts,types.ts}`
+- 非组件内路由跳转：`import { navigate } from '@/router/navigate'`（依赖 `App.tsx` 中 `setNavigate` 注入；拦截器/非 React 模块使用）
+
+## 强制行为
+
+- 新增 HTTP 调用统一走 `@/utils/request` 的 `http` 实例（细则见 `modules/service.mdc`）
+- 新增页面后同步在 `src/router/routes.tsx` 注册路由与必要 meta（细则见 `modules/route.mdc`）
+- `src/` 内导入优先使用 `@/` 别名（细则见 `basic/code-names.mdc`）
+
+## 禁止行为
+
+- 禁止在页面、组件、store 中散落裸 axios 请求（细则见 `modules/service.mdc`）
+- 禁止硬编码接口域名、密钥或敏感配置
+- 禁止超出需求的大范围无关重构

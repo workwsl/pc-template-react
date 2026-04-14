@@ -1,116 +1,88 @@
 # Cursor 规则说明
 
-本目录包含了 XBB Agent Project React 项目的完整 Cursor 规则集，帮助 AI 更好地理解项目结构、代码规范和开发流程。
+本目录只放“硬约束（必须遵守）”；教程、示例和解释统一放在 `docs/`。
 
-## 📁 规则文件列表
+## 总纲入口
 
-### 全局规则（alwaysApply: true）
+- [ai.mdc](mdc:.cursor/rules/ai.mdc) 为本仓库规则总纲（alwaysApply），定义分层、执行流程与边界。
 
-这些规则会在每次请求时都应用：
+## 执行总纲
 
-1. **project-overview.mdc** - 项目概览
-   - 技术栈说明
-   - 目录结构
-   - 开发工具链
-   - 关键约定
+1. 先读全局规则（alwaysApply）
+2. 根据任务场景选择分层规则（`basic/*`、`modules/*`）
+3. 对齐仓库内已有实现风格后再改动
+4. 交付前完成最小自检（受影响文件、类型、lint/构建按需）
 
-2. **code-standards.mdc** - 代码规范
-   - 命名规范（文件、变量、函数、组件）
-   - 导入顺序
-   - TypeScript 使用规范
-   - 注释规范
+## 规则文件结构建议
 
-### 特定范围规则（globs）
+每个规则文件建议采用统一结构，方便检索与执行：
 
-这些规则只在特定文件或目录中应用：
+- 基础规范：适用范围、目标、实现边界
+- 强制行为：必须执行，可检查
+- 禁止行为：明确禁止，可检查
+- 示例代码：正反例或引用仓库内实现
 
-3. **react-development.mdc** - React 开发规范
-   - 应用范围：`src/**/*.{tsx,jsx}`
-   - 组件开发标准
-   - Hooks 使用规范
-   - Props 设计
-   - 性能优化原则
+## 单一真源约定
 
-4. **api-development.mdc** - API 开发规范
-   - 应用范围：`src/services/**/*`
-   - Services 目录结构
-   - 类型命名规范（模块前缀）
-   - API 方法定义
-   - 类型导出
+- `ai.mdc` 只维护“分层、流程、边界”
+- `README.md` 只维护“导航与索引”
+- 具体规则正文仅维护在 `basic/*` 与 `modules/*`
 
-5. **page-development.mdc** - 页面开发规范
-   - 应用范围：`src/pages/**/*`
-   - 页面目录命名（小驼峰）
-   - 必需文件结构
-   - BEM 样式命名规范
-   - 路由配置
+## 规则分层
 
-6. **style-guidelines.mdc** - 样式规范
-   - 应用范围：`**/*.{less,css}`
-   - BEM 命名详解（Block, Element `_`, Modifier `__`）
-   - Less 使用规范
-   - CSS Modules
-   - 移动端适配
+### 全局规则（alwaysApply）
 
-7. **state-management.mdc** - 状态管理规范
-   - 应用范围：`src/store/**/*`
-   - Zustand 使用指南
-   - Store 创建规范
-   - 选择器 Hooks
-   - 持久化配置
+1. `ai.mdc`：规则总纲（首读）
+2. `basic/project-overview.mdc`：项目技术栈与目录基线
 
-8. **utils-guidelines.mdc** - 工具函数规范
-   - 应用范围：`src/utils/**/*`
-   - 工具函数设计原则
-   - 请求封装使用
-   - 存储工具使用
-   - 格式化工具使用
+### `basic/`（必须调用）
 
-## 🎯 规则优先级
+- `project-overview.mdc`
+- `basic.mdc`
+- `code-quality.mdc`
+- `ts.mdc`
+- `react.mdc`
+- `style.mdc`
+- `comment.mdc`
+- `code-names.mdc`
+- `lint.mdc`
+- `git-commit.mdc`
 
-1. **全局规则**（alwaysApply: true）始终生效
-2. **特定范围规则**（globs）根据当前文件路径匹配
-3. 当多个规则都匹配时，AI 会综合考虑所有相关规则
+### `modules/`（按需）
 
-## 📝 使用建议
+- `components.mdc`
+- `pages.mdc`
+- `hooks.mdc`
+- `service.mdc`
+- `route.mdc`
+- `constants.mdc`
+- `utils.mdc`
+- `store.mdc`
 
-### 开发新功能时
+### 旧文件状态
 
-1. 先查看 `project-overview.mdc` 了解项目整体结构
-2. 根据开发内容查看对应的规则文件：
-   - 开发 API → `api-development.mdc`
-   - 开发页面 → `page-development.mdc` + `react-development.mdc`
-   - 编写样式 → `style-guidelines.mdc`
-   - 状态管理 → `state-management.mdc`
-   - 工具函数 → `utils-guidelines.mdc`
+- 旧平铺规则文件已删除，正文维护统一在 `basic/` 与 `modules/`
 
-### 代码审查时
+## 场景与调用建议
 
-参考 `code-standards.mdc` 和具体的规则文件进行检查。
+- 页面开发：`basic/react.mdc` + `basic/style.mdc` + `modules/pages.mdc`
+- 服务封装：`basic/ts.mdc` + `basic/code-quality.mdc` + `modules/service.mdc`
+- 状态管理：`basic/ts.mdc` + `modules/store.mdc` + `modules/constants.mdc`
+- 通用工具：`basic/code-quality.mdc` + `modules/utils.mdc` + `modules/route.mdc`
 
-### 遇到问题时
+## 维护原则
 
-1. 查看对应规则文件的"常见错误"部分
-2. 查看项目 `docs/` 目录下的详细文档
+- rules 只保留短规则和边界，不放长教程
+- docs 负责示例、背景和排障
+- 修改 `.prettierrc`、`eslint.config.js`、`package.json scripts` 时，需同步更新 docs 与对应 rules
 
-## 🔗 相关文档
+## 相关文档
 
-项目完整文档位于 `docs/` 目录：
-
-- [快速开始指南](../docs/QUICK_START.md)
-- [项目结构指南](../docs/PROJECT_GUIDE.md)
-- [React 开发规范](../docs/REACT_GUIDE.md)
-- [API 开发规范](../docs/API_GUIDE.md)
-- [页面开发规范](../docs/PAGE_GUIDE.md)
-- [状态管理指南](../docs/ZUSTAND_GUIDE.md)
-- [代码格式化配置](../docs/FORMAT_CONFIG.md)
-
-## 💡 提示
-
-这些规则文件使用 `.mdc` 扩展名（Markdown with Cursor extensions），支持：
-
-- **Frontmatter 元数据**：控制规则应用范围
-- **文件引用**：使用 `mdc:` 语法引用项目文件
-- **Markdown 格式**：支持完整的 Markdown 语法
-
-规则文件会帮助 Cursor AI 更好地理解您的项目，提供更准确的代码建议和补全。
+- [AGENTS.md](../../AGENTS.md)（仓库协作与 AI 入口）
+- [快速开始指南](../../docs/QUICK_START.md)
+- [项目结构指南](../../docs/PROJECT_GUIDE.md)
+- [React 开发规范](../../docs/REACT_GUIDE.md)
+- [API 开发规范](../../docs/API_GUIDE.md)
+- [页面开发规范](../../docs/PAGE_GUIDE.md)
+- [状态管理指南](../../docs/ZUSTAND_GUIDE.md)
+- [代码格式化配置](../../docs/FORMAT_CONFIG.md)

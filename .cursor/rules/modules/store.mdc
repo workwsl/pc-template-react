@@ -1,0 +1,21 @@
+---
+description: Zustand 状态管理约束（结构、订阅与持久化）
+alwaysApply: false
+---
+
+# Store 规范
+
+## 强制行为
+
+- Store 文件放在 `src/store/modules`，并在 `src/store/index.ts` 统一导出
+- 每个 store 定义完整状态与 action 类型
+- 组件内优先使用选择器订阅（`useXxxStore(state => state.xxx)`）
+- 状态更新保持不可变
+- 使用 `persist` 时通过 `partialize` 限定持久化字段
+- 非组件环境读取状态使用 `useXxxStore.getState()`
+
+## 禁止行为
+
+- 禁止新增 `any` 规避状态类型
+- 禁止订阅整个 store 导致无效重渲染
+- 禁止持久化临时 UI 状态

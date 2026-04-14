@@ -30,7 +30,23 @@
 - Axios - HTTP 请求
 - Less - CSS 预处理
 - TailwindCSS v4 - 样式优先方案
-- 如果需要查看 React 18 + Ant Design 5 的旧版本，请切换到 `react18antd5` 分支
+
+## 其他分支与多分支开发（Git Worktree）
+
+- **main**：React 19 + TypeScript + Vite + shadcn/ui + Tailwind（无 Ant Design）
+- **react18antd5**：React 18 + Ant Design 5 + Less
+
+本分支与上述分支的 `.cursor/rules`、`.cursor/skills`、`AGENTS.md` **各自维护**，初版曾参考 `main` 的目录结构，后续演进互不强制对齐。
+
+并行检出多个分支时，可在仓库**父目录**执行（路径可按需调整）：
+
+```bash
+git fetch origin
+git worktree add ../pc-template-react-main origin/main
+git worktree add ../pc-template-react-react18antd5 origin/react18antd5
+```
+
+使用 `git worktree list` 查看已绑定的目录。
 
 ## 🎨 样式策略（重要）
 

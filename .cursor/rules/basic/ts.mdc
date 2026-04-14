@@ -1,0 +1,22 @@
+---
+description: TypeScript 规范（React 项目）
+alwaysApply: false
+---
+
+# TypeScript 规范
+
+## 强制行为
+
+- 类型导入使用 `import type`
+- 对象结构优先 `interface`；联合/交叉/函数签名使用 `type`
+- 导出 API 与工具函数显式标注参数、返回值
+- 对象级联取值优先使用可选链 `?.`（如 `obj?.a?.b`），避免层层判空与不安全访问
+
+## 禁止行为
+
+- 禁止新增 `any`
+- 禁止使用类型断言规避真实类型问题
+
+## 参考
+
+- [REACT_GUIDE](mdc:docs/REACT_GUIDE.md)

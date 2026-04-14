@@ -1,0 +1,22 @@
+---
+description: 样式规范（TailwindCSS v4 + Ant Design 6 + Less 补充）
+alwaysApply: false
+---
+
+# 样式规范
+
+## 强制行为
+
+- 页面与布局优先使用 **TailwindCSS v4** utility class；存在条件拼接、变体组合或类名复用时使用 `cn()`（若项目已提供）
+- antd 组件样式通过 **`StyleProvider layer`**（见 `App.tsx`）与 Tailwind 分层，保证 Tailwind 更易覆盖 antd 默认样式
+- 复杂布局、存量改造或 Tailwind 难以表达的场景可使用 **`*.module.less`**，与 README「样式策略」一致
+
+## 禁止行为
+
+- 禁止在常规页面上用大量全局裸 CSS 替代 Tailwind/Less 模块化方案而无理由
+- 禁止绕过已约定的 layer 策略随意提高 antd 样式权重，导致 Tailwind 无法覆盖
+
+## 参考
+
+- [PAGE_GUIDE](mdc:docs/PAGE_GUIDE.md)
+- 仓库 `README.md`「样式策略」小节
