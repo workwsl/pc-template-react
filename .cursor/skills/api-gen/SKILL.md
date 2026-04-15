@@ -7,6 +7,7 @@ description: >-
   scripts/openapi-diff.sh（需 jq），不纳入应用或 npm 脚本。
 license: MIT
 version: 2.5.0
+disable-model-invocation: true
 allowed-tools: [Bash, Read, Write, Edit]
 ---
 
